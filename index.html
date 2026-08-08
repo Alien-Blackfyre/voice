@@ -16,6 +16,29 @@
             overflow: hidden; perspective: 1000px;
         }
 
+        /* زر التبديل بين الصوت والكتابة (ثابت في الأعلى يميناً) */
+        #mode-toggle-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 10000;
+            background: rgba(0, 0, 0, 0.7); color: #d4af37; border: 1px solid #d4af37;
+            padding: 10px 20px; border-radius: 20px; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-size: 1.1em; transition: all 0.3s;
+        }
+        #mode-toggle-btn:hover { background: #d4af37; color: #0d1117; box-shadow: 0 0 15px #d4af37; }
+
+        /* حاوية إدخال النص (مخفية افتراضياً) */
+        #text-input-container { display: none; margin-top: 10px; z-index: 20; position: relative; }
+        #spell-input {
+            padding: 15px; font-size: 1.2em; font-family: 'Cairo', sans-serif;
+            border: 2px solid #d4af37; background-color: #222; color: white;
+            border-radius: 8px; width: 280px; text-align: center; margin-left: 10px;
+        }
+        #spell-input:focus { outline: none; box-shadow: 0 0 15px #d4af37; }
+        #cast-btn {
+            padding: 15px 25px; font-size: 1.2em; background-color: #ae0001; color: white;
+            border: none; border-radius: 8px; cursor: pointer; font-family: 'Amiri', serif; font-weight: bold;
+        }
+        #cast-btn:hover { background-color: #ff3333; box-shadow: 0 0 15px #ff3333; }
+
         /* 1. Lumos */
         body.lumos-active { background-color: #ffffff !important; color: #000000; box-shadow: inset 0 0 50px #fff9c4; }
 
@@ -32,17 +55,13 @@
             position: absolute; bottom: -50px; border-radius: 50%;
             filter: blur(8px); mix-blend-mode: screen; animation: rise linear forwards;
         }
-        @keyframes rise {
-            0% { transform: translateY(0) scale(1) translateX(0); opacity: 1; }
-            100% { transform: translateY(-80vh) scale(0.4) translateX(var(--sway)); opacity: 0; }
-        }
+        @keyframes rise { 0% { transform: translateY(0) scale(1) translateX(0); opacity: 1; } 100% { transform: translateY(-80vh) scale(0.4) translateX(var(--sway)); opacity: 0; } }
 
-        /* 4. Fiendfyre (تم التعديل لإخفائها تماماً) */
+        /* 4. Fiendfyre */
         #fiendfyre-container {
-            position: fixed; bottom: -100vh; width: 100%; display: flex; /* مخفي تماماً بالأسفل */
+            position: fixed; bottom: -100vh; width: 100%; display: flex; 
             justify-content: center; align-items: flex-end; gap: 30px;
-            pointer-events: none; z-index: 6; transition: bottom 2s ease-in-out, opacity 1s ease;
-            opacity: 0; /* شفافية كاملة */
+            pointer-events: none; z-index: 6; transition: bottom 2s ease-in-out, opacity 1s ease; opacity: 0; 
         }
         body.fiendfyre-active #fiendfyre-container { bottom: 5vh; opacity: 1; }
         .fiendfyre-beast {
@@ -52,10 +71,7 @@
         }
         .fiendfyre-beast.snake { animation-delay: 0s; font-size: 15rem; }
         .fiendfyre-beast.dragon { animation-delay: 0.5s; }
-        @keyframes fiendfyre-move {
-            0% { transform: translateY(0) scale(1) rotate(-10deg); }
-            100% { transform: translateY(-30px) scale(1.1) rotate(10deg); }
-        }
+        @keyframes fiendfyre-move { 0% { transform: translateY(0) scale(1) rotate(-10deg); } 100% { transform: translateY(-30px) scale(1.1) rotate(10deg); } }
         @keyframes fiendfyre-flicker {
             0% { opacity: 0.85; filter: grayscale(100%) sepia(100%) hue-rotate(-20deg) saturate(12) brightness(1.2) drop-shadow(0 -10px 15px #ff0000); }
             100% { opacity: 1; filter: grayscale(100%) sepia(100%) hue-rotate(-30deg) saturate(18) brightness(1.6) drop-shadow(0 -15px 35px #ff8c00); }
@@ -108,17 +124,13 @@
         body.reparo-active { animation: flash-gold 1s ease-out; }
         @keyframes flash-gold { 0% { box-shadow: inset 0 0 0px #d4af37; } 50% { box-shadow: inset 0 0 150px #d4af37; } 100% { box-shadow: inset 0 0 0px #d4af37; } }
 
-        /* 11. Serpensortia و Vipera Evanesca (تم التعديل لإخفائه تماماً) */
+        /* 11. Serpensortia و Vipera Evanesca */
         #snake-container {
-            position: fixed; bottom: -100vh; left: 50%; transform: translateX(-50%); /* مخفي تماماً بالأسفل */
+            position: fixed; bottom: -100vh; left: 50%; transform: translateX(-50%);
             font-size: 10rem; z-index: 15; transition: bottom 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
-            pointer-events: none; filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5));
-            opacity: 0; /* شفافية كاملة قبل النطق */
+            pointer-events: none; filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5)); opacity: 0;
         }
-        body.serpensortia-active #snake-container { 
-            bottom: -20px; opacity: 1; /* يظهر بشفافية كاملة ومكان صحيح */
-            animation: slither 3s ease-in-out infinite alternate; 
-        }
+        body.serpensortia-active #snake-container { bottom: -20px; opacity: 1; animation: slither 3s ease-in-out infinite alternate; }
         @keyframes slither { 0% { transform: translateX(-55%) rotate(-5deg); } 100% { transform: translateX(-45%) rotate(5deg); } }
         
         .vipera-evanesca-anim { animation: burn-vanish 1.5s forwards !important; }
@@ -131,7 +143,9 @@
         /* 12. Duro */
         body.duro-active { background-color: #3b3b3b; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px); }
         body.duro-active #main-content h1, body.duro-active #main-content #status, body.duro-active #main-content #spell-result { color: #888 !important; text-shadow: 2px 2px 0px #222, -1px -1px 0px #555 !important; }
-        body.duro-active #mic-btn { background-color: #555; border-color: #222; color: #aaa; box-shadow: inset 3px 3px 6px #222, inset -3px -3px 6px #777; }
+        body.duro-active #mic-btn, body.duro-active #mode-toggle-btn { background-color: #555; border-color: #222; color: #aaa; box-shadow: inset 3px 3px 6px #222, inset -3px -3px 6px #777; }
+        body.duro-active #spell-input { background-color: #444; border-color: #222; color: #aaa; }
+        body.duro-active #cast-btn { background-color: #555; color: #aaa; }
 
         /* 13. Avis */
         .bird-particle { position: fixed; right: -10%; font-size: 3rem; z-index: 100; animation: flyBird linear forwards; pointer-events: none; }
@@ -186,21 +200,23 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         #patronus-container p { font-size: 1.2em; margin-bottom: 20px; line-height: 1.5; }
         #patronus-input { width: 80%; padding: 10px; font-size: 1.2em; border: 1px solid #d4af37; border-radius: 5px; background: #111; color: #fff; text-align: center; margin-bottom: 15px; }
-        #call-btn { background-color: #2a623d; color: white; border: none; padding: 10px 20px; font-size: 1.2em; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
+        #call-btn-patronus { background-color: #2a623d; color: white; border: none; padding: 10px 20px; font-size: 1.2em; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
     </style>
 </head>
 <body>
 
+    <!-- زر التبديل بين المايك والكتابة -->
+    <button id="mode-toggle-btn">⌨️ كتابة</button>
+
     <!-- حاويات التأثيرات البصرية -->
     <div id="fire-container"></div>
     <div id="fiendfyre-container">
-        <!-- الثعبان والتنين متوهجان كالنار -->
         <div class="fiendfyre-beast snake">🐍</div>
         <div class="fiendfyre-beast dragon">🐉</div>
     </div>
     <div id="water-container"></div>
     <div id="obliviate-fog"></div>
-    <div id="snake-container">🐍</div> <!-- الثعبان الأخضر (Serpensortia) -->
+    <div id="snake-container">🐍</div>
     
     <!-- تأثير الزجاج المهشم -->
     <div id="glass-crack-container">
@@ -215,14 +231,23 @@
     <div id="main-content" class="levitate-target">
         <h1>عصاك السحرية جاهزة</h1>
         <div id="status">اضغط على الزر وانطق التعويذة</div>
+        
+        <!-- زر المايكروفون -->
         <button id="mic-btn">🎙️</button>
+
+        <!-- مربع الكتابة (مخفي افتراضياً) -->
+        <div id="text-input-container">
+            <input type="text" id="spell-input" placeholder="اكتب التعويذة هنا..." autocomplete="off">
+            <button id="cast-btn">إلقاء ✨</button>
+        </div>
+
         <div id="spell-result"></div>
 
         <div id="patronus-container">
             <p>اختار مين اكتر حد بتتبسط لما تكلمه (الباترونس بتاعك يعني) 🦌✨</p>
             <input type="tel" id="patronus-input" placeholder="رقم الهاتف..." autocomplete="off">
             <br>
-            <button id="call-btn" onclick="callPatronus()">استدعاء</button>
+            <button id="call-btn-patronus" onclick="callPatronus()">استدعاء</button>
         </div>
     </div>
 
@@ -232,6 +257,10 @@
         const resultText = document.getElementById('spell-result');
         const patronusContainer = document.getElementById('patronus-container');
         const mainContent = document.getElementById('main-content');
+        const modeToggleBtn = document.getElementById('mode-toggle-btn');
+        const textInputContainer = document.getElementById('text-input-container');
+        const spellInput = document.getElementById('spell-input');
+        const castBtn = document.getElementById('cast-btn');
         const body = document.body;
         
         let cameraTrack = null;
@@ -240,6 +269,8 @@
         let fireTimeout = null;
         let leviosaTimeout = null;
         let confundoTimeout = null;
+        let isTextMode = false;
+        let recognition = null;
 
         // قائمة التعاويذ المتاحة (22 تعويذة)
         const validSpells = [
@@ -278,18 +309,20 @@
                 if (spokenText.includes("finite") && spell === "finite incantatem") return spell;
 
                 let distance = getSimilarity(spokenText, spell);
-                if (distance < lowestDistance) {
-                    lowestDistance = distance; bestMatch = spell;
-                }
+                if (distance < lowestDistance) { lowestDistance = distance; bestMatch = spell; }
             }
             return (lowestDistance <= 6) ? bestMatch : spokenText;
         }
 
+        // إعداد التعرف على الصوت
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            statusText.innerText = "عذراً، متصفحك لا يدعم التعرف على الصوت."; micBtn.style.display = 'none';
+            // لو المتصفح مش بيدعم الصوت، نحوله لوضع الكتابة إجبارياً
+            switchToTextMode();
+            modeToggleBtn.style.display = 'none'; // إخفاء زر التبديل لأن الصوت مش متاح
+            statusText.innerText = "متصفحك لا يدعم الصوت. استخدم الكتابة لإلقاء التعاويذ.";
         } else {
-            const recognition = new SpeechRecognition();
+            recognition = new SpeechRecognition();
             recognition.lang = 'en-US'; recognition.interimResults = false;
             
             micBtn.addEventListener('click', () => {
@@ -299,12 +332,7 @@
 
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript.toLowerCase();
-                const correctedSpell = findClosestSpell(transcript);
-                
-                if (transcript !== correctedSpell && validSpells.includes(correctedSpell)) {
-                    resultText.innerHTML = `<span style="color:#888; font-size:0.6em; text-decoration:line-through;">${transcript}</span> <br> ✨ ${correctedSpell}`;
-                } else resultText.innerText = transcript;
-                executeSpell(correctedSpell);
+                handleSpellInput(transcript);
             };
 
             recognition.onspeechend = () => {
@@ -313,6 +341,60 @@
             };
             recognition.onerror = () => { micBtn.classList.remove('listening'); statusText.innerText = "لم أتمكن من السماع، حاول مجدداً."; };
         }
+
+        // وظائف التبديل بين الصوت والكتابة
+        function switchToTextMode() {
+            isTextMode = true;
+            micBtn.style.display = 'none';
+            textInputContainer.style.display = 'block';
+            modeToggleBtn.innerText = '🎙️ صوت';
+            statusText.innerText = "اكتب التعويذة واضغط إلقاء";
+            spellInput.focus();
+            if (recognition && micBtn.classList.contains('listening')) recognition.stop();
+        }
+
+        function switchToVoiceMode() {
+            isTextMode = false;
+            micBtn.style.display = 'flex';
+            textInputContainer.style.display = 'none';
+            modeToggleBtn.innerText = '⌨️ كتابة';
+            statusText.innerText = "اضغط على الزر وانطق التعويذة";
+            spellInput.value = "";
+        }
+
+        modeToggleBtn.addEventListener('click', () => {
+            if (isTextMode) switchToVoiceMode(); else switchToTextMode();
+        });
+
+        // التعامل مع الإدخال (سواء صوت أو كتابة)
+        function handleSpellInput(rawText) {
+            rawText = rawText.trim().toLowerCase();
+            if(!rawText) return;
+            
+            const correctedSpell = findClosestSpell(rawText);
+            if (rawText !== correctedSpell && validSpells.includes(correctedSpell)) {
+                resultText.innerHTML = `<span style="color:#888; font-size:0.6em; text-decoration:line-through;">${rawText}</span> <br> ✨ ${correctedSpell}`;
+            } else {
+                resultText.innerText = rawText;
+            }
+            executeSpell(correctedSpell);
+        }
+
+        // أحداث أزرار الكتابة
+        castBtn.addEventListener('click', () => {
+            handleSpellInput(spellInput.value);
+            spellInput.value = ""; // تنظيف المربع بعد الإلقاء
+        });
+
+        spellInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSpellInput(spellInput.value);
+                spellInput.value = "";
+            }
+        });
+
+        // --- باقي وظائف السحر والمؤثرات --- //
 
         function startFire() {
             if (isFireActive) return;
@@ -359,7 +441,6 @@
                 startFire(); clearTimeout(fireTimeout);
                 fireTimeout = setTimeout(() => { stopFire(); if(statusText.innerText.includes("Incendio")) statusText.innerText = "✨ انطفأت النار!"; }, 8000);
             }
-            // 22. Fiendfyre (نار اللعنة)
             else if (spell === "fiendfyre") {
                 statusText.innerText = "🐉 Fiendfyre! (وحوش النار الملعونة)";
                 startFire(); 
@@ -452,7 +533,8 @@
                     stopFire(); body.className = ''; mainContent.className = 'levitate-target'; 
                     document.getElementById('glass-crack-container').style.display = 'none'; 
                     document.getElementById('snake-container').classList.remove('vipera-evanesca-anim');
-                    patronusContainer.style.display = "none"; resultText.innerText = ""; statusText.innerText = "اضغط على الزر وانطق التعويذة";
+                    patronusContainer.style.display = "none"; resultText.innerText = ""; 
+                    statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة";
                 }, 1500); 
                 setTimeout(() => body.classList.remove('obliviate-active'), 3000);
             }
