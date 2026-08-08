@@ -41,99 +41,62 @@
 
         /* 1. Lumos */
         body.lumos-active { background-color: #ffffff !important; color: #000000; box-shadow: inset 0 0 50px #fff9c4; }
-
         /* 2. Petrificus Totalus */
         body.frozen { pointer-events: none !important; user-select: none; filter: grayscale(100%) contrast(150%) brightness(80%); }
-
         /* 3. Incendio */
         body.incendio-active { background: radial-gradient(circle at bottom, #2b0500 0%, #0d1117 60%); }
-        #fire-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 100vh;
-            pointer-events: none; z-index: 5; overflow: hidden;
-        }
-        .flame-particle {
-            position: absolute; bottom: -50px; border-radius: 50%;
-            filter: blur(8px); mix-blend-mode: screen; animation: rise linear forwards;
-        }
+        #fire-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 5; overflow: hidden; }
+        .flame-particle { position: absolute; bottom: -50px; border-radius: 50%; filter: blur(8px); mix-blend-mode: screen; animation: rise linear forwards; }
         @keyframes rise { 0% { transform: translateY(0) scale(1) translateX(0); opacity: 1; } 100% { transform: translateY(-80vh) scale(0.4) translateX(var(--sway)); opacity: 0; } }
 
         /* 4. Fiendfyre */
         #fiendfyre-container {
-            position: fixed; bottom: -100vh; width: 100%; display: flex; 
-            justify-content: center; align-items: flex-end; gap: 30px;
+            position: fixed; bottom: -100vh; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 30px;
             pointer-events: none; z-index: 6; transition: bottom 2s ease-in-out, opacity 1s ease; opacity: 0; 
         }
         body.fiendfyre-active #fiendfyre-container { bottom: 5vh; opacity: 1; }
         .fiendfyre-beast {
-            font-size: 13rem;
-            filter: grayscale(100%) sepia(100%) hue-rotate(-25deg) saturate(15) brightness(1.3) drop-shadow(0 -10px 20px #ff0000) drop-shadow(0 0 40px #ff4500);
+            font-size: 13rem; filter: grayscale(100%) sepia(100%) hue-rotate(-25deg) saturate(15) brightness(1.3) drop-shadow(0 -10px 20px #ff0000) drop-shadow(0 0 40px #ff4500);
             animation: fiendfyre-move 3s infinite alternate ease-in-out, fiendfyre-flicker 0.15s infinite alternate;
         }
-        .fiendfyre-beast.snake { animation-delay: 0s; font-size: 15rem; }
-        .fiendfyre-beast.dragon { animation-delay: 0.5s; }
+        .fiendfyre-beast.snake { animation-delay: 0s; font-size: 15rem; } .fiendfyre-beast.dragon { animation-delay: 0.5s; }
         @keyframes fiendfyre-move { 0% { transform: translateY(0) scale(1) rotate(-10deg); } 100% { transform: translateY(-30px) scale(1.1) rotate(10deg); } }
-        @keyframes fiendfyre-flicker {
-            0% { opacity: 0.85; filter: grayscale(100%) sepia(100%) hue-rotate(-20deg) saturate(12) brightness(1.2) drop-shadow(0 -10px 15px #ff0000); }
-            100% { opacity: 1; filter: grayscale(100%) sepia(100%) hue-rotate(-30deg) saturate(18) brightness(1.6) drop-shadow(0 -15px 35px #ff8c00); }
-        }
+        @keyframes fiendfyre-flicker { 0% { opacity: 0.85; filter: grayscale(100%) sepia(100%) hue-rotate(-20deg) saturate(12) brightness(1.2) drop-shadow(0 -10px 15px #ff0000); } 100% { opacity: 1; filter: grayscale(100%) sepia(100%) hue-rotate(-30deg) saturate(18) brightness(1.6) drop-shadow(0 -15px 35px #ff8c00); } }
 
         /* 5. Aguamenti */
         #water-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 0;
-            background: rgba(28, 163, 236, 0.7); z-index: 10; pointer-events: none;
-            transition: height 2s ease-in-out, opacity 1.5s ease-in-out;
-            box-shadow: inset 0 20px 50px rgba(255, 255, 255, 0.4); border-top: 5px solid rgba(255, 255, 255, 0.5); opacity: 1;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(28, 163, 236, 0.7); z-index: 10; pointer-events: none;
+            transition: height 2s ease-in-out, opacity 1.5s ease-in-out; box-shadow: inset 0 20px 50px rgba(255, 255, 255, 0.4); border-top: 5px solid rgba(255, 255, 255, 0.5); opacity: 1;
         }
         body.aguamenti-active #water-container { height: 100vh; }
 
         /* 6. Confundo */
         body.confundo-active { animation: confundo-spin 8s ease-in-out infinite alternate; filter: hue-rotate(180deg) blur(1px); }
-        @keyframes confundo-spin {
-            0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(15deg) scale(1.1); }
-            50% { transform: rotate(180deg) scale(0.8); } 75% { transform: rotate(165deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); }
-        }
+        @keyframes confundo-spin { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(15deg) scale(1.1); } 50% { transform: rotate(180deg) scale(0.8); } 75% { transform: rotate(165deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
 
         /* 7. Wingardium Leviosa */
         body.leviosa-active .levitate-target { animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-40px) rotate(3deg); } }
 
         /* 8. Obliviate */
-        #obliviate-fog {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(230,230,230,0.9) 100%);
-            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 1.5s ease-in-out;
-        }
+        #obliviate-fog { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(230,230,230,0.9) 100%); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 1.5s ease-in-out; }
         body.obliviate-active #obliviate-fog { opacity: 1; }
 
         /* 9. Bombarda */
         .shake-intense { animation: bombarda-shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes bombarda-shake {
-            10%, 90% { transform: translate3d(-10px, 10px, 0) rotate(-2deg); } 20%, 80% { transform: translate3d(10px, -10px, 0) rotate(2deg); }
-            30%, 50%, 70% { transform: translate3d(-15px, 15px, 0) rotate(-4deg); } 40%, 60% { transform: translate3d(15px, -15px, 0) rotate(4deg); }
-        }
-        #glass-crack-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9998; display: none; opacity: 0.85;
-        }
+        @keyframes bombarda-shake { 10%, 90% { transform: translate3d(-10px, 10px, 0) rotate(-2deg); } 20%, 80% { transform: translate3d(10px, -10px, 0) rotate(2deg); } 30%, 50%, 70% { transform: translate3d(-15px, 15px, 0) rotate(-4deg); } 40%, 60% { transform: translate3d(15px, -15px, 0) rotate(4deg); } }
+        #glass-crack-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; display: none; opacity: 0.85; }
 
         /* 10. Reparo */
         body.reparo-active { animation: flash-gold 1s ease-out; }
         @keyframes flash-gold { 0% { box-shadow: inset 0 0 0px #d4af37; } 50% { box-shadow: inset 0 0 150px #d4af37; } 100% { box-shadow: inset 0 0 0px #d4af37; } }
 
         /* 11. Serpensortia و Vipera Evanesca */
-        #snake-container {
-            position: fixed; bottom: -100vh; left: 50%; transform: translateX(-50%);
-            font-size: 10rem; z-index: 15; transition: bottom 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
-            pointer-events: none; filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5)); opacity: 0;
-        }
+        #snake-container { position: fixed; bottom: -100vh; left: 50%; transform: translateX(-50%); font-size: 10rem; z-index: 15; transition: bottom 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; pointer-events: none; filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5)); opacity: 0; }
         body.serpensortia-active #snake-container { bottom: -20px; opacity: 1; animation: slither 3s ease-in-out infinite alternate; }
         @keyframes slither { 0% { transform: translateX(-55%) rotate(-5deg); } 100% { transform: translateX(-45%) rotate(5deg); } }
         .vipera-evanesca-anim { animation: burn-vanish 1.5s forwards !important; }
-        @keyframes burn-vanish {
-            0% { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5)) brightness(1); transform: translateX(-50%) scale(1); opacity: 1; }
-            50% { filter: drop-shadow(0 0 40px rgba(255, 69, 0, 1)) sepia(1) hue-rotate(-50deg) saturate(5) brightness(1.5); transform: translateX(-50%) scale(1.1); opacity: 0.8; }
-            100% { filter: blur(10px) brightness(0); transform: translateX(-50%) scale(0); opacity: 0; }
-        }
+        @keyframes burn-vanish { 0% { filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.5)) brightness(1); transform: translateX(-50%) scale(1); opacity: 1; } 50% { filter: drop-shadow(0 0 40px rgba(255, 69, 0, 1)) sepia(1) hue-rotate(-50deg) saturate(5) brightness(1.5); transform: translateX(-50%) scale(1.1); opacity: 0.8; } 100% { filter: blur(10px) brightness(0); transform: translateX(-50%) scale(0); opacity: 0; } }
 
         /* 12. Duro */
         body.duro-active { background-color: #3b3b3b; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px); }
@@ -143,21 +106,44 @@
 
         /* 13. Avis */
         .bird-particle { position: fixed; right: -10%; font-size: 3rem; z-index: 100; animation: flyBird linear forwards; pointer-events: none; }
-        @keyframes flyBird {
-            0% { transform: translateX(0) translateY(0) rotate(-15deg); opacity: 1; }
-            50% { transform: translateX(-60vw) translateY(-30px) rotate(10deg); }
-            100% { transform: translateX(-120vw) translateY(20px) rotate(-10deg); opacity: 0; }
-        }
+        @keyframes flyBird { 0% { transform: translateX(0) translateY(0) rotate(-15deg); opacity: 1; } 50% { transform: translateX(-60vw) translateY(-30px) rotate(10deg); } 100% { transform: translateX(-120vw) translateY(20px) rotate(-10deg); opacity: 0; } }
 
-        /* 14. Expelliarmus (العصا الطائرة) */
-        .disarmed-wand {
-            position: fixed;
-            font-size: 8rem;
-            z-index: 10001;
-            pointer-events: none;
-            transition: left 0.8s ease-out, top 0.8s ease-out, transform 0.8s ease-out;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+        /* 14. Expelliarmus */
+        .disarmed-wand { position: fixed; font-size: 8rem; z-index: 10001; pointer-events: none; transition: left 0.8s ease-out, top 0.8s ease-out, transform 0.8s ease-out; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+
+        /* 15. Sectumsempra (قطرات الدم) */
+        #blood-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9997; }
+        .blood-drop {
+            position: absolute; top: -50px; width: 12px; height: 18px;
+            background: #8a0303; border-radius: 50% 50% 50% 0; transform: rotate(45deg);
+            animation: fall-blood linear infinite; opacity: 0.9;
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5);
         }
+        @keyframes fall-blood { 0% { top: -50px; opacity: 1; } 80% { opacity: 1; } 100% { top: 100vh; opacity: 0; } }
+        /* Vulnera Sanentur (شفاء الدم) */
+        .healing .blood-drop { animation: heal-blood 1.5s forwards !important; }
+        @keyframes heal-blood { to { opacity: 0; transform: scale(0) rotate(45deg); } }
+
+        /* 16. Riddikulus (المهرج) */
+        #clown-container {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-size: 15rem; z-index: 10002; pointer-events: none; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #clown-container.show { transform: translate(-50%, -50%) scale(1); animation: bounce-clown 2s infinite; }
+        @keyframes bounce-clown { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -60%) scale(1.1); } }
+
+        /* 17. Alohomora & Colloportus (الأقفال) */
+        #lock-container {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 12rem; z-index: 10002; pointer-events: none; display: none; opacity: 0;
+        }
+        #lock-container.show-lock { display: block; animation: lock-fade 2.5s forwards; }
+        #lock-icon { display: inline-block; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+        .anim-unlock { animation: unlock-shake 0.6s ease-in-out; }
+        .anim-lock { animation: lock-shake 0.6s ease-in-out; }
+        @keyframes lock-fade { 0% { opacity: 0; transform: translate(-50%, -30%); } 15% { opacity: 1; transform: translate(-50%, -50%); } 85% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -70%); } }
+        @keyframes unlock-shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } 75% { transform: rotate(-10deg); } }
+        @keyframes lock-shake { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
         /* المحتوى الرئيسي */
         #main-content {
@@ -210,15 +196,17 @@
 
     <button id="mode-toggle-btn">⌨️ كتابة</button>
 
-    <!-- حاويات التأثيرات البصرية -->
+    <!-- حاويات التأثيرات البصرية المستقلة -->
     <div id="fire-container"></div>
     <div id="fiendfyre-container">
-        <div class="fiendfyre-beast snake">🐍</div>
-        <div class="fiendfyre-beast dragon">🐉</div>
+        <div class="fiendfyre-beast snake">🐍</div><div class="fiendfyre-beast dragon">🐉</div>
     </div>
     <div id="water-container"></div>
     <div id="obliviate-fog"></div>
     <div id="snake-container">🐍</div>
+    <div id="blood-container"></div>
+    <div id="clown-container">🤡</div>
+    <div id="lock-container"><div id="lock-icon">🔒</div></div>
     
     <!-- تأثير الزجاج المهشم -->
     <div id="glass-crack-container">
@@ -263,22 +251,18 @@
         const castBtn = document.getElementById('cast-btn');
         const body = document.body;
         
-        let cameraTrack = null;
-        let fireInterval = null;
-        let isFireActive = false;
-        let fireTimeout = null;
-        let leviosaTimeout = null;
-        let confundoTimeout = null;
-        let isTextMode = false;
-        let recognition = null;
+        let cameraTrack = null; let fireInterval = null; let isFireActive = false;
+        let fireTimeout = null; let leviosaTimeout = null; let confundoTimeout = null;
+        let isTextMode = false; let recognition = null;
 
-        // قائمة التعاويذ المتاحة (23 تعويذة)
+        // قائمة التعاويذ المتاحة (28 تعويذة)
         const validSpells = [
             "lumos", "nox", "aguamenti", "incendio", "expecto patronum",
             "petrificus totalus", "avada kedavra", "confundo", "wingardium leviosa",
             "obliviate", "bombarda", "reparo", "engorgio", "reducio",
             "serpensortia", "vipera evanesca", "avis", "descendo", "diffindo", 
-            "duro", "finite incantatem", "fiendfyre", "expelliarmus"
+            "duro", "finite incantatem", "fiendfyre", "expelliarmus",
+            "sectumsempra", "vulnera sanentur", "riddikulus", "alohomora", "colloportus"
         ];
 
         function getSimilarity(s1, s2) {
@@ -301,8 +285,7 @@
         }
 
         function findClosestSpell(spokenText) {
-            let bestMatch = spokenText;
-            let lowestDistance = Infinity;
+            let bestMatch = spokenText; let lowestDistance = Infinity;
             for (let spell of validSpells) {
                 if (spokenText.includes(spell)) return spell;
                 if (spokenText.includes("leviosa") && spell === "wingardium leviosa") return spell;
@@ -316,8 +299,7 @@
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            switchToTextMode();
-            modeToggleBtn.style.display = 'none';
+            switchToTextMode(); modeToggleBtn.style.display = 'none';
             statusText.innerText = "متصفحك لا يدعم الصوت. استخدم الكتابة لإلقاء التعاويذ.";
         } else {
             recognition = new SpeechRecognition();
@@ -354,8 +336,7 @@
         modeToggleBtn.addEventListener('click', () => { if (isTextMode) switchToVoiceMode(); else switchToTextMode(); });
 
         function handleSpellInput(rawText) {
-            rawText = rawText.trim().toLowerCase();
-            if(!rawText) return;
+            rawText = rawText.trim().toLowerCase(); if(!rawText) return;
             const correctedSpell = findClosestSpell(rawText);
             if (rawText !== correctedSpell && validSpells.includes(correctedSpell)) {
                 resultText.innerHTML = `<span style="color:#888; font-size:0.6em; text-decoration:line-through;">${rawText}</span> <br> ✨ ${correctedSpell}`;
@@ -367,51 +348,34 @@
         spellInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleSpellInput(spellInput.value); spellInput.value = ""; } });
 
         function startFire() {
-            if (isFireActive) return;
-            isFireActive = true; body.classList.add('incendio-active');
+            if (isFireActive) return; isFireActive = true; body.classList.add('incendio-active');
             const container = document.getElementById('fire-container');
             fireInterval = setInterval(() => {
                 const flame = document.createElement('div'); flame.classList.add('flame-particle');
                 const size = Math.random() * 80 + 40; const left = Math.random() * 100;
                 const duration = Math.random() * 2 + 1.5; const sway = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100); 
                 const colors = [ "radial-gradient(circle, rgba(255,200,0,1) 0%, rgba(255,80,0,0.8) 40%, rgba(255,0,0,0) 70%)", "radial-gradient(circle, rgba(255,140,0,1) 0%, rgba(200,20,0,0.8) 50%, rgba(255,0,0,0) 70%)" ];
-                flame.style.width = `${size}px`; flame.style.height = `${size}px`;
-                flame.style.left = `${left}%`; flame.style.animationDuration = `${duration}s`;
+                flame.style.width = `${size}px`; flame.style.height = `${size}px`; flame.style.left = `${left}%`; flame.style.animationDuration = `${duration}s`;
                 flame.style.setProperty('--sway', `${sway}px`); flame.style.background = colors[Math.floor(Math.random() * colors.length)];
                 container.appendChild(flame); setTimeout(() => { flame.remove(); }, duration * 1000);
             }, 60); 
         }
 
         function stopFire() {
-            if (!isFireActive) return;
-            isFireActive = false; clearInterval(fireInterval); body.classList.remove('incendio-active');
+            if (!isFireActive) return; isFireActive = false; clearInterval(fireInterval); body.classList.remove('incendio-active');
         }
 
-        // دالة إنشاء العصا الطائرة (Expelliarmus)
         function throwDisarmedWand() {
-            const wand = document.createElement('div');
-            wand.innerText = '🪄';
-            wand.className = 'disarmed-wand';
-            
-            // اختيار حافة عشوائية (0: فوق, 1: يمين, 2: تحت, 3: يسار)
-            const edge = Math.floor(Math.random() * 4);
-            let startX, startY, endX, endY;
-            
+            const wand = document.createElement('div'); wand.innerText = '🪄'; wand.className = 'disarmed-wand';
+            const edge = Math.floor(Math.random() * 4); let startX, startY, endX, endY;
             if (edge === 0) { startX = Math.random() * window.innerWidth; startY = -200; endX = Math.random() * window.innerWidth; endY = window.innerHeight + 200; } 
             else if (edge === 1) { startX = window.innerWidth + 200; startY = Math.random() * window.innerHeight; endX = -200; endY = Math.random() * window.innerHeight; } 
             else if (edge === 2) { startX = Math.random() * window.innerWidth; startY = window.innerHeight + 200; endX = Math.random() * window.innerWidth; endY = -200; } 
             else { startX = -200; startY = Math.random() * window.innerHeight; endX = window.innerWidth + 200; endY = Math.random() * window.innerHeight; }
-            
             wand.style.left = `${startX}px`; wand.style.top = `${startY}px`;
-            const startRot = Math.random() * 360; wand.style.transform = `rotate(${startRot}deg)`;
-            document.body.appendChild(wand);
-            
-            // فرض تحديث الشاشة لتطبيق الحركة
+            const startRot = Math.random() * 360; wand.style.transform = `rotate(${startRot}deg)`; document.body.appendChild(wand);
             void wand.offsetWidth;
-            
-            wand.style.left = `${endX}px`; wand.style.top = `${endY}px`;
-            wand.style.transform = `rotate(${startRot + 720}deg)`; // لفتين في الهواء
-            
+            wand.style.left = `${endX}px`; wand.style.top = `${endY}px`; wand.style.transform = `rotate(${startRot + 720}deg)`; 
             setTimeout(() => wand.remove(), 1000);
         }
 
@@ -430,18 +394,15 @@
                 body.classList.remove('lumos-active'); statusText.innerText = "🌑 Nox!";
             }
             else if (spell === "incendio") {
-                statusText.innerText = "🔥 Incendio! (نار تشتعل)";
-                startFire(); clearTimeout(fireTimeout);
+                statusText.innerText = "🔥 Incendio! (نار تشتعل)"; startFire(); clearTimeout(fireTimeout);
                 fireTimeout = setTimeout(() => { stopFire(); if(statusText.innerText.includes("Incendio")) statusText.innerText = "✨ انطفأت النار!"; }, 8000);
             }
             else if (spell === "fiendfyre") {
-                statusText.innerText = "🐉 Fiendfyre! (وحوش النار الملعونة)";
-                startFire(); body.classList.add('fiendfyre-active'); clearTimeout(fireTimeout);
+                statusText.innerText = "🐉 Fiendfyre! (وحوش النار الملعونة)"; startFire(); body.classList.add('fiendfyre-active'); clearTimeout(fireTimeout);
                 fireTimeout = setTimeout(() => { stopFire(); body.classList.remove('fiendfyre-active'); if(statusText.innerText.includes("Fiendfyre")) statusText.innerText = "✨ انطفأت نار اللعنة!"; }, 10000); 
             }
             else if (spell === "aguamenti") {
-                const water = document.getElementById('water-container');
-                water.style.opacity = "1"; body.classList.add('aguamenti-active');
+                const water = document.getElementById('water-container'); water.style.opacity = "1"; body.classList.add('aguamenti-active');
                 if (isFireActive || body.classList.contains('fiendfyre-active')) { stopFire(); body.classList.remove('fiendfyre-active'); clearTimeout(fireTimeout); statusText.innerText = "💧 Aguamenti! (تطفئ النيران)"; } 
                 else statusText.innerText = "💧 Aguamenti! (تملأ المكان)";
                 setTimeout(() => { body.classList.remove('aguamenti-active'); statusText.innerText = "✨ انحسرت المياه!"; setTimeout(() => water.style.opacity = "0", 2000); }, 5000); 
@@ -460,7 +421,7 @@
             }
             else if (spell === "reparo") {
                 statusText.innerText = "✨ Reparo! (تم إصلاح كل شيء)";
-                document.getElementById('glass-crack-container').style.display = 'none'; 
+                document.getElementById('glass-crack-container').style.display = 'none'; document.getElementById('blood-container').innerHTML = ''; // إصلاح الدم
                 mainContent.classList.remove('descendo-active', 'diffindo-active'); 
                 body.classList.add('reparo-active'); setTimeout(() => body.classList.remove('reparo-active'), 1000);
             }
@@ -475,13 +436,11 @@
                 else statusText.innerText = "🔎 Reducio! (هذا أصغر حجم ممكن)";
             }
             else if (spell === "serpensortia") {
-                statusText.innerText = "🐍 Serpensortia! (استدعاء ثعبان)";
-                const snake = document.getElementById('snake-container'); snake.classList.remove('vipera-evanesca-anim'); body.classList.add('serpensortia-active');
+                statusText.innerText = "🐍 Serpensortia! (استدعاء ثعبان)"; const snake = document.getElementById('snake-container'); snake.classList.remove('vipera-evanesca-anim'); body.classList.add('serpensortia-active');
             }
             else if (spell === "vipera evanesca") {
                 if (body.classList.contains('serpensortia-active')) {
-                    statusText.innerText = "🔥 Vipera Evanesca! (احتراق الثعبان)";
-                    const snake = document.getElementById('snake-container'); snake.classList.add('vipera-evanesca-anim');
+                    statusText.innerText = "🔥 Vipera Evanesca! (احتراق الثعبان)"; const snake = document.getElementById('snake-container'); snake.classList.add('vipera-evanesca-anim');
                     setTimeout(() => { body.classList.remove('serpensortia-active'); snake.classList.remove('vipera-evanesca-anim'); }, 1500); 
                 } else statusText.innerText = "✨ Vipera Evanesca! (لا يوجد ثعبان)";
             }
@@ -496,26 +455,67 @@
                     }, i * 200); 
                 }
             }
-            else if (spell === "descendo") {
-                statusText.innerText = "⬇️ Descendo! (سقوط أرضاً)"; mainContent.classList.add('descendo-active');
-            }
+            else if (spell === "descendo") { statusText.innerText = "⬇️ Descendo! (سقوط أرضاً)"; mainContent.classList.add('descendo-active'); }
             else if (spell === "diffindo") {
                 statusText.innerText = "✂️ Diffindo! (تمزيق وقطع)"; mainContent.classList.add('diffindo-active');
-                const slash = document.createElement('div'); slash.className = "diffindo-slash"; document.body.appendChild(slash);
-                setTimeout(() => slash.remove(), 500);
+                const slash = document.createElement('div'); slash.className = "diffindo-slash"; document.body.appendChild(slash); setTimeout(() => slash.remove(), 500);
             }
-            else if (spell === "duro") {
-                statusText.innerText = "🗿 Duro! (تحجر للعناصر)"; body.classList.add('duro-active');
-            }
+            else if (spell === "duro") { statusText.innerText = "🗿 Duro! (تحجر للعناصر)"; body.classList.add('duro-active'); }
             else if (spell === "finite incantatem") {
                 if(body.classList.contains('duro-active')) { statusText.innerText = "✨ Finite Incantatem! (زال التحجر)"; body.classList.remove('duro-active'); } 
                 else statusText.innerText = "✨ لم أجد سحراً لإبطاله!";
             }
-            // 23. Expelliarmus (التجريد من السلاح)
-            else if (spell === "expelliarmus") {
-                statusText.innerText = "💥 Expelliarmus! (تجريد من السلاح)";
-                throwDisarmedWand();
+            else if (spell === "expelliarmus") { statusText.innerText = "💥 Expelliarmus! (تجريد من السلاح)"; throwDisarmedWand(); }
+            
+            // 24. Sectumsempra (نزيف)
+            else if (spell === "sectumsempra") {
+                statusText.innerText = "🩸 Sectumsempra! (نزيف)";
+                const bloodCont = document.getElementById('blood-container');
+                bloodCont.classList.remove('healing');
+                bloodCont.innerHTML = '';
+                for(let i=0; i<40; i++) {
+                    let drop = document.createElement('div'); drop.className = 'blood-drop';
+                    drop.style.left = (Math.random() * 100) + 'vw';
+                    drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+                    drop.style.animationDelay = (Math.random() * 2) + 's';
+                    bloodCont.appendChild(drop);
+                }
             }
+            // 25. Vulnera Sanentur (شفاء)
+            else if (spell === "vulnera sanentur") {
+                statusText.innerText = "✨ Vulnera Sanentur! (شفاء الجروح)";
+                const bloodCont = document.getElementById('blood-container');
+                if (bloodCont.children.length > 0) {
+                    bloodCont.classList.add('healing');
+                    setTimeout(() => { bloodCont.innerHTML = ''; bloodCont.classList.remove('healing'); }, 1500);
+                } else {
+                    statusText.innerText = "✨ لم أجد جروحاً لشفائها!";
+                }
+            }
+            // 26. Riddikulus (المهرج)
+            else if (spell === "riddikulus") {
+                statusText.innerText = "🤡 Riddikulus! (تحويل الخوف لمرح)";
+                const clown = document.getElementById('clown-container');
+                clown.classList.add('show');
+                setTimeout(() => clown.classList.remove('show'), 3500);
+            }
+            // 27. Alohomora (فتح القفل)
+            else if (spell === "alohomora") {
+                statusText.innerText = "🔓 Alohomora! (فتح الأقفال)";
+                const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
+                lockCont.classList.remove('show-lock'); void lockCont.offsetWidth; 
+                lockIcon.innerText = "🔒"; lockIcon.className = ""; lockCont.classList.add('show-lock');
+                setTimeout(() => { lockIcon.className = "anim-unlock"; lockIcon.innerText = "🔓"; }, 600);
+            }
+            // 28. Colloportus (إغلاق القفل)
+            else if (spell === "colloportus") {
+                statusText.innerText = "🔒 Colloportus! (إغلاق الأقفال)";
+                const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
+                lockCont.classList.remove('show-lock'); void lockCont.offsetWidth; 
+                lockIcon.innerText = "🔓"; lockIcon.className = ""; lockCont.classList.add('show-lock');
+                setTimeout(() => { lockIcon.className = "anim-lock"; lockIcon.innerText = "🔒"; }, 600);
+            }
+
             else if (spell === "obliviate") {
                 statusText.innerText = "🌫️ Obliviate! (مسح وإعادة ضبط)"; body.classList.add('obliviate-active');
                 setTimeout(() => {
@@ -523,6 +523,9 @@
                     stopFire(); body.className = ''; mainContent.className = 'levitate-target'; 
                     document.getElementById('glass-crack-container').style.display = 'none'; 
                     document.getElementById('snake-container').classList.remove('vipera-evanesca-anim');
+                    document.getElementById('blood-container').innerHTML = ''; // إخفاء الدم
+                    document.getElementById('clown-container').classList.remove('show'); // إخفاء المهرج
+                    document.getElementById('lock-container').classList.remove('show-lock'); // إخفاء الأقفال
                     patronusContainer.style.display = "none"; resultText.innerText = ""; 
                     statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة";
                 }, 1500); 
