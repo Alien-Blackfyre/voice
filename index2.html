@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التعاويذ الصوتية السحرية</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap');
+
+        body {
+            background-color: #0d1117;
+            color: #d4af37;
+            font-family: 'Amiri', serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            transition: all 0.5s ease;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* تأثير كشاف الشاشة (Lumos) */
+        body.lumos-active {
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: inset 0 0 50px #fff9c4;
+        }
+
+        /* تأثير التجميد الكلي (Petrificus Totalus) */
+        body.frozen {
+            pointer-events: none !important; /* يمنع أي نقرة أو إدخال */
+            user-select: none;
+            filter: grayscale(100%) contrast(150%) brightness(80%); /* يجعل الشاشة رمادية ومتحجرة */
+        }
+
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            margin-bottom: 10px;
+        }
+
+        #status {
+            font-size: 1.5em;
+            margin: 10px 0 30px 0;
+            height: 30px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        #mic-btn {
+            background-color: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none;
+        }
+
+        #mic-btn:hover {
+            background-color: #d4af37;
+            color: #0d1117;
+            box-shadow: 0 0 20px #d4af37;
+        }
+
+        #mic-btn.listening {
+            animation: pulse 1.5s infinite;
+            background-color: #ae0001;
+            color: white;
+            border-color: #ae0001;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(174, 0, 1, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(174, 0, 1, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(174, 0, 1, 0); }
+        }
+
+        #spell-result {
+            margin-top: 30px;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-transform: capitalize;
+            direction: ltr;
+            letter-spacing: 2px;
+            color: #ecb939;
+        }
+
+        /* نافذة الباتروناس */
+        #patronus-container {
+            display: none;
+            margin-top: 30px;
+            background: rgba(20, 20, 20, 0.9);
+            padding: 25px;
+            border: 2px solid #ecb939;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(236, 185, 57, 0.2);
+            font-family: 'Cairo', sans-serif;
+            max-width: 400px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #patronus-container p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        #patronus-input {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2em;
+            border: 1px solid #d4af37;
+            border-radius: 5px;
+            background: #111;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #call-btn {
+            background-color: #2a623d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #call-btn:hover {
+            background-color: #3cb371;
+            box-shadow: 0 0 10px #3cb371;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>عصاك السحرية جاهزة</h1>
+    <div id="status">اضغط على الزر وانطق التعويذة</div>
+    
+    <button id="mic-btn">🎙️</button>
+
+    <div id="spell-result"></div>
+
+    <!-- نافذة استدعاء الباتروناس -->
+    <div id="patronus-container">
+        <p>اختار مين اكتر حد بتتبسط لما تكلمه (الباترونس بتاعك يعني) 🦌✨</p>
+        <input type="tel" id="patronus-input" placeholder="رقم الهاتف..." autocomplete="off">
+        <br>
+        <button id="call-btn" onclick="callPatronus()">استدعاء</button>
+    </div>
+
+    <script>
+        const micBtn = document.getElementById('mic-btn');
+        const statusText = document.getElementById('status');
+        const resultText = document.getElementById('spell-result');
+        const patronusContainer = document.getElementById('patronus-container');
+        
+        let cameraTrack = null;
+
+        // إعداد التعرف على الصوت
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (!SpeechRecognition) {
+            statusText.innerText = "عذراً، متصفحك لا يدعم التعرف على الصوت. جرب Google Chrome.";
+            micBtn.style.display = 'none';
+        } else {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US'; 
+            recognition.interimResults = false;
+            
+            micBtn.addEventListener('click', () => {
+                // إخفاء نافذة الباتروناس إذا كانت مفتوحة
+                patronusContainer.style.display = "none"; 
+                
+                recognition.start();
+                micBtn.classList.add('listening');
+                statusText.innerText = "جارِ الاستماع للتعويذة...";
+                resultText.innerText = "";
+            });
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                resultText.innerText = transcript;
+                executeSpell(transcript);
+            };
+
+            recognition.onspeechend = () => {
+                recognition.stop();
+                micBtn.classList.remove('listening');
+                // لا نغير النص إذا كان هناك تعويذة قيد التنفيذ
+                if(statusText.innerText === "جارِ الاستماع للتعويذة...") {
+                    statusText.innerText = "اضغط على الزر وانطق التعويذة";
+                }
+            };
+
+            recognition.onerror = (event) => {
+                micBtn.classList.remove('listening');
+                statusText.innerText = "لم أتمكن من السماع، حاول مجدداً.";
+            };
+        }
+
+        async function executeSpell(spell) {
+            const body = document.body;
+
+            // 1. تعويذة الكشاف (Lumos)
+            if (spell.includes("lumos")) {
+                statusText.innerText = "✨ جارِ تشغيل النور...";
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" }
+                    });
+                    cameraTrack = stream.getVideoTracks()[0];
+                    await cameraTrack.applyConstraints({ advanced: [{ torch: true }] });
+                    statusText.innerText = "✨ Lumos Maxima!";
+                } catch (error) {
+                    body.classList.add('lumos-active');
+                    statusText.innerText = "✨ Lumos! (كشاف الشاشة)";
+                }
+            } 
+            
+            // 2. تعويذة الإطفاء (Nox)
+            else if (spell.includes("nox")) {
+                if (cameraTrack) {
+                    cameraTrack.stop();
+                    cameraTrack = null;
+                }
+                body.classList.remove('lumos-active');
+                statusText.innerText = "🌑 Nox!";
+            }
+            
+            // 3. تعويذة الباتروناس (Expecto Patronum)
+            else if (spell.includes("expecto patronum")) {
+                statusText.innerText = "🦌 جارِ استدعاء الباتروناس...";
+                patronusContainer.style.display = "block"; // إظهار نافذة اختيار الرقم
+                document.getElementById('patronus-input').focus();
+            }
+            
+            // 4. تعويذة الشلل التام (Petrificus Totalus)
+            else if (spell.includes("petrificus totalus")) {
+                statusText.innerText = "❄️ Petrificus Totalus! (الشاشة متجمدة لمدة 10 ثواني)";
+                
+                // تطبيق كلاس التجميد الذي يمنع أي تفاعل
+                body.classList.add('frozen');
+                
+                // فك التجميد تلقائياً بعد 10 ثواني
+                setTimeout(() => {
+                    body.classList.remove('frozen');
+                    statusText.innerText = "✨ تم فك التعويذة! اضغط وانطق من جديد";
+                    resultText.innerText = "";
+                }, 10000); // 10000 ملي ثانية = 10 ثواني
+            }
+            
+            // 5. تعويذة الموت (Avada Kedavra)
+            else if (spell.includes("avada kedavra")) {
+                statusText.innerText = "☠️ تعويذة محظورة!";
+                setTimeout(() => {
+                    body.innerHTML = "<h1 style='color:#ae0001; font-size:4em; margin-top:20vh;'>GAME OVER</h1>";
+                }, 1500);
+            }
+            
+            // تعويذة غير معروفة
+            else {
+                statusText.innerText = "تعويذة غير معروفة.";
+            }
+        }
+
+        // دالة الاتصال بالباتروناس
+        function callPatronus() {
+            const phoneNumber = document.getElementById('patronus-input').value.trim();
+            if (phoneNumber !== "") {
+                window.location.href = `tel:${phoneNumber}`;
+            } else {
+                alert("يرجى كتابة رقم الهاتف أولاً!");
+            }
+        }
+    </script>
+</body>
+</html>
