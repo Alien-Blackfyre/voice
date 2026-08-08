@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التعاويذ الصوتية السحرية - المشروع النهائي</title>
+    <title>التعاويذ الصوتية السحرية - هافلباف</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap');
 
@@ -17,7 +17,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            transition: background-color 1s ease, filter 2s ease, transform 2s ease;
+            transition: background-color 1s ease, filter 2s ease, transform 2s ease, box-shadow 0.5s ease;
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
@@ -85,7 +85,7 @@
             height: 100vh;
         }
 
-        /* 5. Confundo (التشوش) */
+        /* 5. Confundo */
         body.confundo-active {
             animation: confundo-spin 8s ease-in-out infinite alternate;
             filter: hue-rotate(180deg) blur(1px);
@@ -98,22 +98,16 @@
             100% { transform: rotate(360deg) scale(1); }
         }
 
-        /* 6. Wingardium Leviosa (التحليق) */
+        /* 6. Wingardium Leviosa */
         body.leviosa-active .levitate-target {
             animation: float 4s ease-in-out infinite;
         }
-        /* لتأخير حركة بعض العناصر لتبدو عشوائية */
-        body.leviosa-active h1 { animation-delay: 0s; }
-        body.leviosa-active #status { animation-delay: 0.5s; }
-        body.leviosa-active #mic-btn { animation-delay: 1s; }
-        body.leviosa-active #spell-result { animation-delay: 1.5s; }
-
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-40px) rotate(3deg); }
         }
 
-        /* 7. Obliviate (ضباب مسح الذاكرة) */
+        /* 7. Obliviate */
         #obliviate-fog {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -127,11 +121,53 @@
             opacity: 1;
         }
 
-        /* العناصر الأساسية */
-        h1, #status, #spell-result {
-            z-index: 20;
-            position: relative;
+        /* 8. Bombarda (كسر الشاشة) */
+        .shake-intense {
+            animation: bombarda-shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
         }
+        @keyframes bombarda-shake {
+            10%, 90% { transform: translate3d(-10px, 10px, 0) rotate(-2deg); }
+            20%, 80% { transform: translate3d(10px, -10px, 0) rotate(2deg); }
+            30%, 50%, 70% { transform: translate3d(-15px, 15px, 0) rotate(-4deg); }
+            40%, 60% { transform: translate3d(15px, -15px, 0) rotate(4deg); }
+        }
+        #glass-crack-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9998; /* تحت الضباب بقليل */
+            display: none;
+            opacity: 0.85;
+        }
+
+        /* 9. Reparo (الإصلاح) */
+        body.reparo-active {
+            animation: flash-gold 1s ease-out;
+        }
+        @keyframes flash-gold {
+            0% { box-shadow: inset 0 0 0px #d4af37; }
+            50% { box-shadow: inset 0 0 150px #d4af37; }
+            100% { box-shadow: inset 0 0 0px #d4af37; }
+        }
+
+        /* 10. Engorgio / Reducio (التحكم في الحجم) */
+        #main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1); /* الحجم الافتراضي (الوسط) */
+            z-index: 20;
+        }
+        #main-content.text-large {
+            transform: scale(1.4); /* حجم كبير */
+        }
+        #main-content.text-small {
+            transform: scale(0.65); /* حجم صغير */
+        }
+
+        /* العناصر الأساسية */
         h1 {
             font-size: 3em;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
@@ -157,8 +193,6 @@
             justify-content: center;
             align-items: center;
             outline: none;
-            z-index: 20;
-            position: relative;
         }
         #mic-btn:hover {
             background-color: #d4af37;
@@ -198,8 +232,6 @@
             font-family: 'Cairo', sans-serif;
             max-width: 400px;
             animation: fadeIn 0.5s ease;
-            z-index: 20;
-            position: relative;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -222,21 +254,39 @@
     <div id="fire-container"></div>
     <div id="water-container"></div>
     <div id="obliviate-fog"></div>
-
-    <!-- كلاس levitate-target للعناصر التي ستطير -->
-    <h1 class="levitate-target">عصاك السحرية جاهزة</h1>
-    <div id="status" class="levitate-target">اضغط على الزر وانطق التعويذة</div>
     
-    <button id="mic-btn" class="levitate-target">🎙️</button>
+    <!-- تأثير الزجاج المهشم (Bombarda) -->
+    <div id="glass-crack-container">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%; height:100%;">
+            <!-- شروخ عشوائية تبدو كالزجاج المكسور -->
+            <path d="M50,50 L0,0 M50,50 L100,0 M50,50 L100,100 M50,50 L0,100 
+                     M50,50 L20,0 M50,50 L80,0 M50,50 L100,20 M50,50 L100,80 
+                     M50,50 L80,100 M50,50 L20,100 M50,50 L0,80 M50,50 L0,20" 
+                  stroke="rgba(255,255,255,0.8)" stroke-width="0.3" fill="none"/>
+            <path d="M48,48 L52,48 L52,52 L48,52 Z" fill="rgba(255,255,255,0.9)"/>
+            <path d="M20,20 L30,10 L40,25 M80,20 L70,10 L60,25 
+                     M80,80 L70,90 L60,75 M20,80 L30,90 L40,75
+                     M10,50 L20,40 L30,50 M90,50 L80,60 L70,50" 
+                  stroke="rgba(255,255,255,0.6)" stroke-width="0.15" fill="none"/>
+        </svg>
+    </div>
 
-    <div id="spell-result" class="levitate-target"></div>
+    <!-- المحتوى الرئيسي (يتم تطبيق التكبير والتصغير والطيران عليه) -->
+    <div id="main-content" class="levitate-target">
+        <h1>عصاك السحرية جاهزة</h1>
+        <div id="status">اضغط على الزر وانطق التعويذة</div>
+        
+        <button id="mic-btn">🎙️</button>
 
-    <!-- نافذة استدعاء الباتروناس -->
-    <div id="patronus-container" class="levitate-target">
-        <p>اختار مين اكتر حد بتتبسط لما تكلمه (الباترونس بتاعك يعني) 🦌✨</p>
-        <input type="tel" id="patronus-input" placeholder="رقم الهاتف..." autocomplete="off">
-        <br>
-        <button id="call-btn" onclick="callPatronus()">استدعاء</button>
+        <div id="spell-result"></div>
+
+        <!-- نافذة استدعاء الباتروناس -->
+        <div id="patronus-container">
+            <p>اختار مين اكتر حد بتتبسط لما تكلمه (الباترونس بتاعك يعني) 🦌✨</p>
+            <input type="tel" id="patronus-input" placeholder="رقم الهاتف..." autocomplete="off">
+            <br>
+            <button id="call-btn" onclick="callPatronus()">استدعاء</button>
+        </div>
     </div>
 
     <script>
@@ -244,6 +294,7 @@
         const statusText = document.getElementById('status');
         const resultText = document.getElementById('spell-result');
         const patronusContainer = document.getElementById('patronus-container');
+        const mainContent = document.getElementById('main-content');
         const body = document.body;
         
         let cameraTrack = null;
@@ -264,7 +315,11 @@
             "avada kedavra",
             "confundo",
             "wingardium leviosa",
-            "obliviate"
+            "obliviate",
+            "bombarda",
+            "reparo",
+            "engorgio",
+            "reducio"
         ];
 
         function getSimilarity(s1, s2) {
@@ -293,7 +348,6 @@
             let lowestDistance = Infinity;
             for (let spell of validSpells) {
                 if (spokenText.includes(spell)) return spell;
-                // السماح بنطق leviosa وحدها لتفعيل wingardium leviosa
                 if (spokenText.includes("leviosa") && spell === "wingardium leviosa") return spell;
 
                 let distance = getSimilarity(spokenText, spell);
@@ -398,10 +452,8 @@
                     const capabilities = cameraTrack.getCapabilities();
                     if (capabilities.torch) {
                         await cameraTrack.applyConstraints({ advanced: [{ torch: true }] });
-                        statusText.innerText = "✨ Lumos Maxima! (الكشاف شغال)";
-                    } else {
-                        throw new Error("لا يدعم الفلاش");
-                    }
+                        statusText.innerText = "✨ Lumos Maxima!";
+                    } else { throw new Error("لا يدعم الفلاش"); }
                 } catch (error) {
                     body.classList.add('lumos-active');
                     statusText.innerText = "✨ Lumos! (كشاف الشاشة)";
@@ -434,7 +486,7 @@
                 if (isFireActive) {
                     stopFire();
                     clearTimeout(fireTimeout);
-                    statusText.innerText = "💧 Aguamenti! (المياه تطفئ النار وتملأ المكان)";
+                    statusText.innerText = "💧 Aguamenti! (المياه تطفئ النار)";
                 } else {
                     statusText.innerText = "💧 Aguamenti! (المياه تملأ المكان)";
                 }
@@ -466,35 +518,80 @@
                     if(statusText.innerText.includes("Leviosa")) statusText.innerText = "✨ انتهى التحليق!";
                 }, 10000);
             }
+
+            // 7. Bombarda (تحطيم الزجاج)
+            else if (spell === "bombarda") {
+                statusText.innerText = "💥 Bombarda! (تهشيم الشاشة)";
+                document.getElementById('glass-crack-container').style.display = 'block';
+                body.classList.add('shake-intense');
+                setTimeout(() => {
+                    body.classList.remove('shake-intense');
+                }, 400);
+            }
+
+            // 8. Reparo (إصلاح الزجاج)
+            else if (spell === "reparo") {
+                statusText.innerText = "✨ Reparo! (إصلاح الشاشة)";
+                document.getElementById('glass-crack-container').style.display = 'none';
+                body.classList.add('reparo-active');
+                setTimeout(() => {
+                    body.classList.remove('reparo-active');
+                }, 1000);
+            }
+
+            // 9. Engorgio (تكبير)
+            else if (spell === "engorgio") {
+                if (mainContent.classList.contains('text-small')) {
+                    mainContent.classList.remove('text-small');
+                    statusText.innerText = "🔍 Engorgio! (عاد الحجم للوسط)";
+                } else if (!mainContent.classList.contains('text-large')) {
+                    mainContent.classList.add('text-large');
+                    statusText.innerText = "🔍 Engorgio! (تكبير الحجم)";
+                } else {
+                    statusText.innerText = "🔍 Engorgio! (هذا أقصى حجم ممكن)";
+                }
+            }
+
+            // 10. Reducio (تصغير)
+            else if (spell === "reducio") {
+                if (mainContent.classList.contains('text-large')) {
+                    mainContent.classList.remove('text-large');
+                    statusText.innerText = "🔎 Reducio! (عاد الحجم للوسط)";
+                } else if (!mainContent.classList.contains('text-small')) {
+                    mainContent.classList.add('text-small');
+                    statusText.innerText = "🔎 Reducio! (تصغير الحجم)";
+                } else {
+                    statusText.innerText = "🔎 Reducio! (هذا أصغر حجم ممكن)";
+                }
+            }
             
-            // 7. Obliviate (إعادة ضبط شاملة)
+            // 11. Obliviate (إعادة ضبط شاملة)
             else if (spell === "obliviate") {
                 statusText.innerText = "🌫️ Obliviate! (مسح الذاكرة وإعادة الضبط)";
                 body.classList.add('obliviate-active');
                 
-                // إيقاف كل شيء خلف الضباب
                 setTimeout(() => {
                     if (cameraTrack) { cameraTrack.stop(); cameraTrack = null; }
                     stopFire();
-                    body.className = ''; // يمسح كل الكلاسات النشطة مرة واحدة
+                    body.className = ''; 
+                    mainContent.className = 'levitate-target'; // إعادة الحجم لطبيعته
+                    document.getElementById('glass-crack-container').style.display = 'none'; // إصلاح الزجاج
                     patronusContainer.style.display = "none";
                     resultText.innerText = "";
                     statusText.innerText = "اضغط على الزر وانطق التعويذة";
-                }, 1500); // في منتصف الضباب يتم مسح كل شيء
+                }, 1500); 
 
-                setTimeout(() => {
-                    body.classList.remove('obliviate-active');
-                }, 3000);
+                setTimeout(() => { body.classList.remove('obliviate-active'); }, 3000);
             }
 
-            // 8. Expecto Patronum
+            // 12. Expecto Patronum
             else if (spell === "expecto patronum") {
                 statusText.innerText = "🦌 جارِ استدعاء الباتروناس...";
                 patronusContainer.style.display = "block"; 
                 document.getElementById('patronus-input').focus();
             }
             
-            // 9. Petrificus Totalus
+            // 13. Petrificus Totalus
             else if (spell === "petrificus totalus") {
                 statusText.innerText = "❄️ Petrificus Totalus! (متجمدة 10 ثواني)";
                 body.classList.add('frozen');
@@ -507,7 +604,7 @@
                 }, 10000);
             }
             
-            // 10. Avada Kedavra
+            // 14. Avada Kedavra
             else if (spell === "avada kedavra") {
                 statusText.innerText = "☠️ تعويذة محظورة!";
                 setTimeout(() => {
