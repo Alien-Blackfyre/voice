@@ -17,33 +17,32 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            transition: background-color 1s ease;
+            transition: background-color 1s ease, filter 2s ease, transform 2s ease;
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            overflow: hidden; /* لمنع ظهور شريط التمرير */
+            overflow: hidden; 
+            perspective: 1000px;
         }
 
-        /* 1. تأثير كشاف الشاشة (Lumos) */
+        /* 1. Lumos */
         body.lumos-active {
             background-color: #ffffff !important;
             color: #000000;
             box-shadow: inset 0 0 50px #fff9c4;
         }
 
-        /* 2. تأثير التجميد الكلي (Petrificus Totalus) */
+        /* 2. Petrificus Totalus */
         body.frozen {
             pointer-events: none !important;
             user-select: none;
             filter: grayscale(100%) contrast(150%) brightness(80%);
         }
 
-        /* 3. تأثير النار المتحركة (Incendio) */
+        /* 3. Incendio */
         body.incendio-active {
-            /* توهج خفيف جداً في الخلفية من الأسفل ولا يغير لون الشاشة بالكامل */
             background: radial-gradient(circle at bottom, #2b0500 0%, #0d1117 60%);
         }
-        
         #fire-container {
             position: fixed;
             bottom: 0;
@@ -54,8 +53,6 @@
             z-index: 5;
             overflow: hidden;
         }
-
-        /* جزيئات النار المتطايرة التي يولدها الجافاسكريبت */
         .flame-particle {
             position: absolute;
             bottom: -50px;
@@ -64,13 +61,12 @@
             mix-blend-mode: screen;
             animation: rise linear forwards;
         }
-
         @keyframes rise {
             0% { transform: translateY(0) scale(1) translateX(0); opacity: 1; }
             100% { transform: translateY(-80vh) scale(0.4) translateX(var(--sway)); opacity: 0; }
         }
 
-        /* 4. تأثير المياه (Aguamenti) */
+        /* 4. Aguamenti */
         #water-container {
             position: fixed;
             bottom: 0;
@@ -89,22 +85,64 @@
             height: 100vh;
         }
 
+        /* 5. Confundo (التشوش) */
+        body.confundo-active {
+            animation: confundo-spin 8s ease-in-out infinite alternate;
+            filter: hue-rotate(180deg) blur(1px);
+        }
+        @keyframes confundo-spin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(15deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(0.8); }
+            75% { transform: rotate(165deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* 6. Wingardium Leviosa (التحليق) */
+        body.leviosa-active .levitate-target {
+            animation: float 4s ease-in-out infinite;
+        }
+        /* لتأخير حركة بعض العناصر لتبدو عشوائية */
+        body.leviosa-active h1 { animation-delay: 0s; }
+        body.leviosa-active #status { animation-delay: 0.5s; }
+        body.leviosa-active #mic-btn { animation-delay: 1s; }
+        body.leviosa-active #spell-result { animation-delay: 1.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(3deg); }
+        }
+
+        /* 7. Obliviate (ضباب مسح الذاكرة) */
+        #obliviate-fog {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(230,230,230,0.9) 100%);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+        }
+        body.obliviate-active #obliviate-fog {
+            opacity: 1;
+        }
+
         /* العناصر الأساسية */
+        h1, #status, #spell-result {
+            z-index: 20;
+            position: relative;
+        }
         h1 {
             font-size: 3em;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
             margin-bottom: 10px;
-            z-index: 20;
         }
-
         #status {
             font-size: 1.5em;
             margin: 10px 0 30px 0;
             height: 30px;
             font-family: 'Cairo', sans-serif;
-            z-index: 20;
         }
-
         #mic-btn {
             background-color: rgba(0, 0, 0, 0.5);
             color: #d4af37;
@@ -120,27 +158,24 @@
             align-items: center;
             outline: none;
             z-index: 20;
+            position: relative;
         }
-
         #mic-btn:hover {
             background-color: #d4af37;
             color: #0d1117;
             box-shadow: 0 0 20px #d4af37;
         }
-
         #mic-btn.listening {
             animation: pulse 1.5s infinite;
             background-color: #ae0001;
             color: white;
             border-color: #ae0001;
         }
-
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(174, 0, 1, 0.7); }
             70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(174, 0, 1, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(174, 0, 1, 0); }
         }
-
         #spell-result {
             margin-top: 30px;
             font-size: 2.5em;
@@ -149,7 +184,6 @@
             direction: ltr;
             letter-spacing: 2px;
             color: #ecb939;
-            z-index: 20;
         }
 
         /* نافذة الباتروناس */
@@ -165,40 +199,20 @@
             max-width: 400px;
             animation: fadeIn 0.5s ease;
             z-index: 20;
+            position: relative;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        #patronus-container p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
+        #patronus-container p { font-size: 1.2em; margin-bottom: 20px; line-height: 1.5; }
         #patronus-input {
-            width: 80%;
-            padding: 10px;
-            font-size: 1.2em;
-            border: 1px solid #d4af37;
-            border-radius: 5px;
-            background: #111;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 15px;
+            width: 80%; padding: 10px; font-size: 1.2em; border: 1px solid #d4af37;
+            border-radius: 5px; background: #111; color: #fff; text-align: center; margin-bottom: 15px;
         }
-
         #call-btn {
-            background-color: #2a623d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background-color: #2a623d; color: white; border: none; padding: 10px 20px;
+            font-size: 1.2em; border-radius: 5px; cursor: pointer; transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -207,16 +221,18 @@
     <!-- حاويات التأثيرات البصرية -->
     <div id="fire-container"></div>
     <div id="water-container"></div>
+    <div id="obliviate-fog"></div>
 
-    <h1>عصاك السحرية جاهزة</h1>
-    <div id="status">اضغط على الزر وانطق التعويذة</div>
+    <!-- كلاس levitate-target للعناصر التي ستطير -->
+    <h1 class="levitate-target">عصاك السحرية جاهزة</h1>
+    <div id="status" class="levitate-target">اضغط على الزر وانطق التعويذة</div>
     
-    <button id="mic-btn">🎙️</button>
+    <button id="mic-btn" class="levitate-target">🎙️</button>
 
-    <div id="spell-result"></div>
+    <div id="spell-result" class="levitate-target"></div>
 
     <!-- نافذة استدعاء الباتروناس -->
-    <div id="patronus-container">
+    <div id="patronus-container" class="levitate-target">
         <p>اختار مين اكتر حد بتتبسط لما تكلمه (الباترونس بتاعك يعني) 🦌✨</p>
         <input type="tel" id="patronus-input" placeholder="رقم الهاتف..." autocomplete="off">
         <br>
@@ -228,11 +244,14 @@
         const statusText = document.getElementById('status');
         const resultText = document.getElementById('spell-result');
         const patronusContainer = document.getElementById('patronus-container');
+        const body = document.body;
         
         let cameraTrack = null;
         let fireInterval = null;
         let isFireActive = false;
         let fireTimeout = null;
+        let leviosaTimeout = null;
+        let confundoTimeout = null;
 
         // قائمة التعاويذ المتاحة
         const validSpells = [
@@ -242,10 +261,12 @@
             "incendio",
             "expecto patronum",
             "petrificus totalus",
-            "avada kedavra"
+            "avada kedavra",
+            "confundo",
+            "wingardium leviosa",
+            "obliviate"
         ];
 
-        // خوارزمية Levenshtein لحساب المسافة وتصحيح الكلمات
         function getSimilarity(s1, s2) {
             let costs = new Array();
             for (let i = 0; i <= s1.length; i++) {
@@ -270,19 +291,20 @@
         function findClosestSpell(spokenText) {
             let bestMatch = spokenText;
             let lowestDistance = Infinity;
-
             for (let spell of validSpells) {
                 if (spokenText.includes(spell)) return spell;
+                // السماح بنطق leviosa وحدها لتفعيل wingardium leviosa
+                if (spokenText.includes("leviosa") && spell === "wingardium leviosa") return spell;
+
                 let distance = getSimilarity(spokenText, spell);
                 if (distance < lowestDistance) {
                     lowestDistance = distance;
                     bestMatch = spell;
                 }
             }
-            return (lowestDistance <= 5) ? bestMatch : spokenText;
+            return (lowestDistance <= 6) ? bestMatch : spokenText;
         }
 
-        // إعداد التعرف على الصوت
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (!SpeechRecognition) {
@@ -327,22 +349,19 @@
             };
         }
 
-        // دالة إنشاء جزيئات النار المتطايرة
         function startFire() {
             if (isFireActive) return;
             isFireActive = true;
-            document.body.classList.add('incendio-active');
+            body.classList.add('incendio-active');
             const container = document.getElementById('fire-container');
             
             fireInterval = setInterval(() => {
                 const flame = document.createElement('div');
                 flame.classList.add('flame-particle');
-                
-                // عشوائية في الحجم واللون والاتجاه لتبدو كنار حقيقية
                 const size = Math.random() * 80 + 40; 
                 const left = Math.random() * 100;
                 const duration = Math.random() * 2 + 1.5; 
-                const sway = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100); // تمايل يمين ويسار
+                const sway = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100); 
                 
                 const colors = [
                     "radial-gradient(circle, rgba(255,200,0,1) 0%, rgba(255,80,0,0.8) 40%, rgba(255,0,0,0) 70%)",
@@ -357,23 +376,20 @@
                 flame.style.background = colors[Math.floor(Math.random() * colors.length)];
                 
                 container.appendChild(flame);
-                
                 setTimeout(() => { flame.remove(); }, duration * 1000);
-            }, 60); // توليد شعلة كل جزء من الثانية
+            }, 60); 
         }
 
         function stopFire() {
             if (!isFireActive) return;
             isFireActive = false;
             clearInterval(fireInterval);
-            document.body.classList.remove('incendio-active');
-            // ترك الجزيئات المتبقية لتختفي بشكل طبيعي
+            body.classList.remove('incendio-active');
         }
 
         async function executeSpell(spell) {
-            const body = document.body;
-
-            // 1. Lumos (إضاءة فقط)
+            
+            // 1. Lumos
             if (spell === "lumos") {
                 statusText.innerText = "✨ جارِ تشغيل النور...";
                 try {
@@ -392,37 +408,29 @@
                 }
             } 
             
-            // 2. Nox (قفل Lumos فقط)
+            // 2. Nox
             else if (spell === "nox") {
-                if (cameraTrack) {
-                    cameraTrack.stop();
-                    cameraTrack = null;
-                }
+                if (cameraTrack) { cameraTrack.stop(); cameraTrack = null; }
                 body.classList.remove('lumos-active');
                 statusText.innerText = "🌑 Nox!";
             }
             
-            // 3. Incendio (نار متحركة)
+            // 3. Incendio
             else if (spell === "incendio") {
                 statusText.innerText = "🔥 Incendio! (نار تشتعل)";
                 startFire();
-                
                 clearTimeout(fireTimeout);
                 fireTimeout = setTimeout(() => {
                     stopFire();
-                    if(statusText.innerText.includes("Incendio")) {
-                        statusText.innerText = "✨ انطفأت النار!";
-                    }
+                    if(statusText.innerText.includes("Incendio")) statusText.innerText = "✨ انطفأت النار!";
                 }, 8000);
             }
 
-            // 4. Aguamenti (مياه تطفي النار)
+            // 4. Aguamenti
             else if (spell === "aguamenti") {
                 const water = document.getElementById('water-container');
                 water.style.opacity = "1";
                 body.classList.add('aguamenti-active');
-                
-                // لو فيه نار شغالة، المياه هتطفيها فوراً
                 if (isFireActive) {
                     stopFire();
                     clearTimeout(fireTimeout);
@@ -430,25 +438,65 @@
                 } else {
                     statusText.innerText = "💧 Aguamenti! (المياه تملأ المكان)";
                 }
-                
                 setTimeout(() => {
                     body.classList.remove('aguamenti-active');
                     statusText.innerText = "✨ انحسرت المياه!";
-                    // إخفاء حاوية المياه تدريجياً
                     setTimeout(() => { water.style.opacity = "0"; }, 2000);
                 }, 5000); 
             }
             
-            // 5. Expecto Patronum
+            // 5. Confundo
+            else if (spell === "confundo") {
+                statusText.innerText = "🌀 Confundo! (تشوش تام)";
+                body.classList.add('confundo-active');
+                clearTimeout(confundoTimeout);
+                confundoTimeout = setTimeout(() => {
+                    body.classList.remove('confundo-active');
+                    if(statusText.innerText.includes("Confundo")) statusText.innerText = "✨ زال تأثير التشوش!";
+                }, 8000);
+            }
+
+            // 6. Wingardium Leviosa
+            else if (spell === "wingardium leviosa") {
+                statusText.innerText = "🪶 Wingardium Leviosa! (تحليق)";
+                body.classList.add('leviosa-active');
+                clearTimeout(leviosaTimeout);
+                leviosaTimeout = setTimeout(() => {
+                    body.classList.remove('leviosa-active');
+                    if(statusText.innerText.includes("Leviosa")) statusText.innerText = "✨ انتهى التحليق!";
+                }, 10000);
+            }
+            
+            // 7. Obliviate (إعادة ضبط شاملة)
+            else if (spell === "obliviate") {
+                statusText.innerText = "🌫️ Obliviate! (مسح الذاكرة وإعادة الضبط)";
+                body.classList.add('obliviate-active');
+                
+                // إيقاف كل شيء خلف الضباب
+                setTimeout(() => {
+                    if (cameraTrack) { cameraTrack.stop(); cameraTrack = null; }
+                    stopFire();
+                    body.className = ''; // يمسح كل الكلاسات النشطة مرة واحدة
+                    patronusContainer.style.display = "none";
+                    resultText.innerText = "";
+                    statusText.innerText = "اضغط على الزر وانطق التعويذة";
+                }, 1500); // في منتصف الضباب يتم مسح كل شيء
+
+                setTimeout(() => {
+                    body.classList.remove('obliviate-active');
+                }, 3000);
+            }
+
+            // 8. Expecto Patronum
             else if (spell === "expecto patronum") {
                 statusText.innerText = "🦌 جارِ استدعاء الباتروناس...";
                 patronusContainer.style.display = "block"; 
                 document.getElementById('patronus-input').focus();
             }
             
-            // 6. Petrificus Totalus
+            // 9. Petrificus Totalus
             else if (spell === "petrificus totalus") {
-                statusText.innerText = "❄️ Petrificus Totalus! (الشاشة متجمدة 10 ثواني)";
+                statusText.innerText = "❄️ Petrificus Totalus! (متجمدة 10 ثواني)";
                 body.classList.add('frozen');
                 setTimeout(() => {
                     body.classList.remove('frozen');
@@ -459,7 +507,7 @@
                 }, 10000);
             }
             
-            // 7. Avada Kedavra
+            // 10. Avada Kedavra
             else if (spell === "avada kedavra") {
                 statusText.innerText = "☠️ تعويذة محظورة!";
                 setTimeout(() => {
