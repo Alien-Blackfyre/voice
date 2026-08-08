@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التعاويذ الصوتية السحرية</title>
+    <title>التعاويذ الصوتية السحرية - المشروع النهائي</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap');
 
@@ -17,30 +17,84 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            transition: all 0.5s ease;
+            transition: background-color 1s ease;
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            overflow: hidden; /* لمنع ظهور شريط التمرير */
         }
 
-        /* تأثير كشاف الشاشة (Lumos) */
+        /* 1. تأثير كشاف الشاشة (Lumos) */
         body.lumos-active {
-            background-color: #ffffff;
+            background-color: #ffffff !important;
             color: #000000;
             box-shadow: inset 0 0 50px #fff9c4;
         }
 
-        /* تأثير التجميد الكلي (Petrificus Totalus) */
+        /* 2. تأثير التجميد الكلي (Petrificus Totalus) */
         body.frozen {
-            pointer-events: none !important; /* يمنع أي نقرة أو إدخال */
+            pointer-events: none !important;
             user-select: none;
-            filter: grayscale(100%) contrast(150%) brightness(80%); /* يجعل الشاشة رمادية ومتحجرة */
+            filter: grayscale(100%) contrast(150%) brightness(80%);
         }
 
+        /* 3. تأثير النار المتحركة (Incendio) */
+        body.incendio-active {
+            /* توهج خفيف جداً في الخلفية من الأسفل ولا يغير لون الشاشة بالكامل */
+            background: radial-gradient(circle at bottom, #2b0500 0%, #0d1117 60%);
+        }
+        
+        #fire-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        /* جزيئات النار المتطايرة التي يولدها الجافاسكريبت */
+        .flame-particle {
+            position: absolute;
+            bottom: -50px;
+            border-radius: 50%;
+            filter: blur(8px);
+            mix-blend-mode: screen;
+            animation: rise linear forwards;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1) translateX(0); opacity: 1; }
+            100% { transform: translateY(-80vh) scale(0.4) translateX(var(--sway)); opacity: 0; }
+        }
+
+        /* 4. تأثير المياه (Aguamenti) */
+        #water-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: rgba(28, 163, 236, 0.7);
+            z-index: 10;
+            pointer-events: none;
+            transition: height 2s ease-in-out, opacity 1.5s ease-in-out;
+            box-shadow: inset 0 20px 50px rgba(255, 255, 255, 0.4);
+            border-top: 5px solid rgba(255, 255, 255, 0.5);
+            opacity: 1;
+        }
+        body.aguamenti-active #water-container {
+            height: 100vh;
+        }
+
+        /* العناصر الأساسية */
         h1 {
             font-size: 3em;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
             margin-bottom: 10px;
+            z-index: 20;
         }
 
         #status {
@@ -48,10 +102,11 @@
             margin: 10px 0 30px 0;
             height: 30px;
             font-family: 'Cairo', sans-serif;
+            z-index: 20;
         }
 
         #mic-btn {
-            background-color: transparent;
+            background-color: rgba(0, 0, 0, 0.5);
             color: #d4af37;
             border: 2px solid #d4af37;
             border-radius: 50%;
@@ -64,6 +119,7 @@
             justify-content: center;
             align-items: center;
             outline: none;
+            z-index: 20;
         }
 
         #mic-btn:hover {
@@ -93,6 +149,7 @@
             direction: ltr;
             letter-spacing: 2px;
             color: #ecb939;
+            z-index: 20;
         }
 
         /* نافذة الباتروناس */
@@ -107,6 +164,7 @@
             font-family: 'Cairo', sans-serif;
             max-width: 400px;
             animation: fadeIn 0.5s ease;
+            z-index: 20;
         }
 
         @keyframes fadeIn {
@@ -142,14 +200,13 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        #call-btn:hover {
-            background-color: #3cb371;
-            box-shadow: 0 0 10px #3cb371;
-        }
     </style>
 </head>
 <body>
+
+    <!-- حاويات التأثيرات البصرية -->
+    <div id="fire-container"></div>
+    <div id="water-container"></div>
 
     <h1>عصاك السحرية جاهزة</h1>
     <div id="status">اضغط على الزر وانطق التعويذة</div>
@@ -173,12 +230,63 @@
         const patronusContainer = document.getElementById('patronus-container');
         
         let cameraTrack = null;
+        let fireInterval = null;
+        let isFireActive = false;
+        let fireTimeout = null;
+
+        // قائمة التعاويذ المتاحة
+        const validSpells = [
+            "lumos",
+            "nox",
+            "aguamenti",
+            "incendio",
+            "expecto patronum",
+            "petrificus totalus",
+            "avada kedavra"
+        ];
+
+        // خوارزمية Levenshtein لحساب المسافة وتصحيح الكلمات
+        function getSimilarity(s1, s2) {
+            let costs = new Array();
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i == 0) costs[j] = j;
+                    else {
+                        if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                }
+                if (i > 0) costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        }
+
+        function findClosestSpell(spokenText) {
+            let bestMatch = spokenText;
+            let lowestDistance = Infinity;
+
+            for (let spell of validSpells) {
+                if (spokenText.includes(spell)) return spell;
+                let distance = getSimilarity(spokenText, spell);
+                if (distance < lowestDistance) {
+                    lowestDistance = distance;
+                    bestMatch = spell;
+                }
+            }
+            return (lowestDistance <= 5) ? bestMatch : spokenText;
+        }
 
         // إعداد التعرف على الصوت
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
         if (!SpeechRecognition) {
-            statusText.innerText = "عذراً، متصفحك لا يدعم التعرف على الصوت. جرب Google Chrome.";
+            statusText.innerText = "عذراً، متصفحك لا يدعم التعرف على الصوت.";
             micBtn.style.display = 'none';
         } else {
             const recognition = new SpeechRecognition();
@@ -186,9 +294,7 @@
             recognition.interimResults = false;
             
             micBtn.addEventListener('click', () => {
-                // إخفاء نافذة الباتروناس إذا كانت مفتوحة
                 patronusContainer.style.display = "none"; 
-                
                 recognition.start();
                 micBtn.classList.add('listening');
                 statusText.innerText = "جارِ الاستماع للتعويذة...";
@@ -197,60 +303,97 @@
 
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript.toLowerCase();
-                resultText.innerText = transcript;
-                executeSpell(transcript);
+                const correctedSpell = findClosestSpell(transcript);
+                
+                if (transcript !== correctedSpell && validSpells.includes(correctedSpell)) {
+                    resultText.innerHTML = `<span style="color:#888; font-size:0.6em; text-decoration:line-through;">${transcript}</span> <br> ✨ ${correctedSpell}`;
+                } else {
+                    resultText.innerText = transcript;
+                }
+                executeSpell(correctedSpell);
             };
 
             recognition.onspeechend = () => {
                 recognition.stop();
                 micBtn.classList.remove('listening');
-                // لا نغير النص إذا كان هناك تعويذة قيد التنفيذ
                 if(statusText.innerText === "جارِ الاستماع للتعويذة...") {
                     statusText.innerText = "اضغط على الزر وانطق التعويذة";
                 }
             };
 
-            recognition.onerror = (event) => {
+            recognition.onerror = () => {
                 micBtn.classList.remove('listening');
                 statusText.innerText = "لم أتمكن من السماع، حاول مجدداً.";
             };
         }
 
+        // دالة إنشاء جزيئات النار المتطايرة
+        function startFire() {
+            if (isFireActive) return;
+            isFireActive = true;
+            document.body.classList.add('incendio-active');
+            const container = document.getElementById('fire-container');
+            
+            fireInterval = setInterval(() => {
+                const flame = document.createElement('div');
+                flame.classList.add('flame-particle');
+                
+                // عشوائية في الحجم واللون والاتجاه لتبدو كنار حقيقية
+                const size = Math.random() * 80 + 40; 
+                const left = Math.random() * 100;
+                const duration = Math.random() * 2 + 1.5; 
+                const sway = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100); // تمايل يمين ويسار
+                
+                const colors = [
+                    "radial-gradient(circle, rgba(255,200,0,1) 0%, rgba(255,80,0,0.8) 40%, rgba(255,0,0,0) 70%)",
+                    "radial-gradient(circle, rgba(255,140,0,1) 0%, rgba(200,20,0,0.8) 50%, rgba(255,0,0,0) 70%)"
+                ];
+
+                flame.style.width = `${size}px`;
+                flame.style.height = `${size}px`;
+                flame.style.left = `${left}%`;
+                flame.style.animationDuration = `${duration}s`;
+                flame.style.setProperty('--sway', `${sway}px`);
+                flame.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(flame);
+                
+                setTimeout(() => { flame.remove(); }, duration * 1000);
+            }, 60); // توليد شعلة كل جزء من الثانية
+        }
+
+        function stopFire() {
+            if (!isFireActive) return;
+            isFireActive = false;
+            clearInterval(fireInterval);
+            document.body.classList.remove('incendio-active');
+            // ترك الجزيئات المتبقية لتختفي بشكل طبيعي
+        }
+
         async function executeSpell(spell) {
             const body = document.body;
 
-           // 1. تعويذة الكشاف (Lumos)
-            if (spell.includes("lumos")) {
+            // 1. Lumos (إضاءة فقط)
+            if (spell === "lumos") {
                 statusText.innerText = "✨ جارِ تشغيل النور...";
                 try {
-                    // طلب الكاميرا الخلفية وتفعيل الفلاش من البداية
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            facingMode: "environment"
-                        }
-                    });
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                     cameraTrack = stream.getVideoTracks()[0];
-                    
-                    // التأكد من دعم الجهاز للفلاش
                     const capabilities = cameraTrack.getCapabilities();
                     if (capabilities.torch) {
-                        await cameraTrack.applyConstraints({
-                            advanced: [{ torch: true }]
-                        });
+                        await cameraTrack.applyConstraints({ advanced: [{ torch: true }] });
                         statusText.innerText = "✨ Lumos Maxima! (الكشاف شغال)";
                     } else {
-                        throw new Error("الجهاز لا يدعم الفلاش عبر المتصفح");
+                        throw new Error("لا يدعم الفلاش");
                     }
                 } catch (error) {
-                    console.log(error);
-                    // لو فشل يفتح الفلاش الحقيقي هينور الشاشة
                     body.classList.add('lumos-active');
                     statusText.innerText = "✨ Lumos! (كشاف الشاشة)";
                 }
-            }
+            } 
             
-            // 2. تعويذة الإطفاء (Nox)
-            else if (spell.includes("nox")) {
+            // 2. Nox (قفل Lumos فقط)
+            else if (spell === "nox") {
                 if (cameraTrack) {
                     cameraTrack.stop();
                     cameraTrack = null;
@@ -259,43 +402,76 @@
                 statusText.innerText = "🌑 Nox!";
             }
             
-            // 3. تعويذة الباتروناس (Expecto Patronum)
-            else if (spell.includes("expecto patronum")) {
+            // 3. Incendio (نار متحركة)
+            else if (spell === "incendio") {
+                statusText.innerText = "🔥 Incendio! (نار تشتعل)";
+                startFire();
+                
+                clearTimeout(fireTimeout);
+                fireTimeout = setTimeout(() => {
+                    stopFire();
+                    if(statusText.innerText.includes("Incendio")) {
+                        statusText.innerText = "✨ انطفأت النار!";
+                    }
+                }, 8000);
+            }
+
+            // 4. Aguamenti (مياه تطفي النار)
+            else if (spell === "aguamenti") {
+                const water = document.getElementById('water-container');
+                water.style.opacity = "1";
+                body.classList.add('aguamenti-active');
+                
+                // لو فيه نار شغالة، المياه هتطفيها فوراً
+                if (isFireActive) {
+                    stopFire();
+                    clearTimeout(fireTimeout);
+                    statusText.innerText = "💧 Aguamenti! (المياه تطفئ النار وتملأ المكان)";
+                } else {
+                    statusText.innerText = "💧 Aguamenti! (المياه تملأ المكان)";
+                }
+                
+                setTimeout(() => {
+                    body.classList.remove('aguamenti-active');
+                    statusText.innerText = "✨ انحسرت المياه!";
+                    // إخفاء حاوية المياه تدريجياً
+                    setTimeout(() => { water.style.opacity = "0"; }, 2000);
+                }, 5000); 
+            }
+            
+            // 5. Expecto Patronum
+            else if (spell === "expecto patronum") {
                 statusText.innerText = "🦌 جارِ استدعاء الباتروناس...";
-                patronusContainer.style.display = "block"; // إظهار نافذة اختيار الرقم
+                patronusContainer.style.display = "block"; 
                 document.getElementById('patronus-input').focus();
             }
             
-            // 4. تعويذة الشلل التام (Petrificus Totalus)
-            else if (spell.includes("petrificus totalus")) {
-                statusText.innerText = "❄️ Petrificus Totalus! (الشاشة متجمدة لمدة 10 ثواني)";
-                
-                // تطبيق كلاس التجميد الذي يمنع أي تفاعل
+            // 6. Petrificus Totalus
+            else if (spell === "petrificus totalus") {
+                statusText.innerText = "❄️ Petrificus Totalus! (الشاشة متجمدة 10 ثواني)";
                 body.classList.add('frozen');
-                
-                // فك التجميد تلقائياً بعد 10 ثواني
                 setTimeout(() => {
                     body.classList.remove('frozen');
-                    statusText.innerText = "✨ تم فك التعويذة! اضغط وانطق من جديد";
-                    resultText.innerText = "";
-                }, 10000); // 10000 ملي ثانية = 10 ثواني
+                    if(statusText.innerText.includes("Petrificus")) {
+                        statusText.innerText = "✨ تم فك التعويذة!";
+                        resultText.innerText = "";
+                    }
+                }, 10000);
             }
             
-            // 5. تعويذة الموت (Avada Kedavra)
-            else if (spell.includes("avada kedavra")) {
+            // 7. Avada Kedavra
+            else if (spell === "avada kedavra") {
                 statusText.innerText = "☠️ تعويذة محظورة!";
                 setTimeout(() => {
                     body.innerHTML = "<h1 style='color:#ae0001; font-size:4em; margin-top:20vh;'>GAME OVER</h1>";
                 }, 1500);
             }
             
-            // تعويذة غير معروفة
             else {
-                statusText.innerText = "تعويذة غير معروفة.";
+                statusText.innerText = "تعويذة غير معروفة أو لم أتعرف عليها جيداً.";
             }
         }
 
-        // دالة الاتصال بالباتروناس
         function callPatronus() {
             const phoneNumber = document.getElementById('patronus-input').value.trim();
             if (phoneNumber !== "") {
