@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التعاويذ الصوتية السحرية - المشروع الأسطوري</title>
+    <title>التعاويذ الصوتية السحرية - هافلباف</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap');
 
@@ -116,27 +116,19 @@
         .blood-drop {
             position: absolute; top: -50px; width: 12px; height: 18px;
             background: #8a0303; border-radius: 50% 50% 50% 0; transform: rotate(45deg);
-            animation: fall-blood linear infinite; opacity: 0.9;
-            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5);
+            animation: fall-blood linear infinite; opacity: 0.9; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.5);
         }
         @keyframes fall-blood { 0% { top: -50px; opacity: 1; } 80% { opacity: 1; } 100% { top: 100vh; opacity: 0; } }
-        /* Vulnera Sanentur (شفاء الدم) */
         .healing .blood-drop { animation: heal-blood 1.5s forwards !important; }
         @keyframes heal-blood { to { opacity: 0; transform: scale(0) rotate(45deg); } }
 
         /* 16. Riddikulus (المهرج) */
-        #clown-container {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            font-size: 15rem; z-index: 10002; pointer-events: none; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        #clown-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 15rem; z-index: 10002; pointer-events: none; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #clown-container.show { transform: translate(-50%, -50%) scale(1); animation: bounce-clown 2s infinite; }
         @keyframes bounce-clown { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -60%) scale(1.1); } }
 
         /* 17. Alohomora & Colloportus (الأقفال) */
-        #lock-container {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 12rem; z-index: 10002; pointer-events: none; display: none; opacity: 0;
-        }
+        #lock-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12rem; z-index: 10002; pointer-events: none; display: none; opacity: 0; }
         #lock-container.show-lock { display: block; animation: lock-fade 2.5s forwards; }
         #lock-icon { display: inline-block; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
         .anim-unlock { animation: unlock-shake 0.6s ease-in-out; }
@@ -144,6 +136,19 @@
         @keyframes lock-fade { 0% { opacity: 0; transform: translate(-50%, -30%); } 15% { opacity: 1; transform: translate(-50%, -50%); } 85% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -70%); } }
         @keyframes unlock-shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } 75% { transform: rotate(-10deg); } }
         @keyframes lock-shake { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* 18. Slugulus Eructo (البزاق) */
+        #slug-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9996; overflow: hidden; }
+        .slug-particle {
+            position: absolute; top: -10vh; font-size: 3rem;
+            animation: fall-slug linear forwards; filter: drop-shadow(0 5px 10px rgba(100,255,100,0.6));
+        }
+        @keyframes fall-slug {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(45deg); opacity: 0; }
+        }
 
         /* المحتوى الرئيسي */
         #main-content {
@@ -207,6 +212,7 @@
     <div id="blood-container"></div>
     <div id="clown-container">🤡</div>
     <div id="lock-container"><div id="lock-icon">🔒</div></div>
+    <div id="slug-container"></div>
     
     <!-- تأثير الزجاج المهشم -->
     <div id="glass-crack-container">
@@ -255,14 +261,14 @@
         let fireTimeout = null; let leviosaTimeout = null; let confundoTimeout = null;
         let isTextMode = false; let recognition = null;
 
-        // قائمة التعاويذ المتاحة (28 تعويذة)
+        // قائمة التعاويذ المتاحة (29 تعويذة)
         const validSpells = [
             "lumos", "nox", "aguamenti", "incendio", "expecto patronum",
             "petrificus totalus", "avada kedavra", "confundo", "wingardium leviosa",
             "obliviate", "bombarda", "reparo", "engorgio", "reducio",
             "serpensortia", "vipera evanesca", "avis", "descendo", "diffindo", 
             "duro", "finite incantatem", "fiendfyre", "expelliarmus",
-            "sectumsempra", "vulnera sanentur", "riddikulus", "alohomora", "colloportus"
+            "sectumsempra", "vulnera sanentur", "riddikulus", "alohomora", "colloportus", "slugulus eructo"
         ];
 
         function getSimilarity(s1, s2) {
@@ -421,7 +427,8 @@
             }
             else if (spell === "reparo") {
                 statusText.innerText = "✨ Reparo! (تم إصلاح كل شيء)";
-                document.getElementById('glass-crack-container').style.display = 'none'; document.getElementById('blood-container').innerHTML = ''; // إصلاح الدم
+                document.getElementById('glass-crack-container').style.display = 'none'; document.getElementById('blood-container').innerHTML = ''; 
+                document.getElementById('slug-container').innerHTML = ''; // تنظيف البزاق
                 mainContent.classList.remove('descendo-active', 'diffindo-active'); 
                 body.classList.add('reparo-active'); setTimeout(() => body.classList.remove('reparo-active'), 1000);
             }
@@ -466,56 +473,52 @@
                 else statusText.innerText = "✨ لم أجد سحراً لإبطاله!";
             }
             else if (spell === "expelliarmus") { statusText.innerText = "💥 Expelliarmus! (تجريد من السلاح)"; throwDisarmedWand(); }
-            
-            // 24. Sectumsempra (نزيف)
             else if (spell === "sectumsempra") {
-                statusText.innerText = "🩸 Sectumsempra! (نزيف)";
-                const bloodCont = document.getElementById('blood-container');
-                bloodCont.classList.remove('healing');
-                bloodCont.innerHTML = '';
+                statusText.innerText = "🩸 Sectumsempra! (نزيف)"; const bloodCont = document.getElementById('blood-container'); bloodCont.classList.remove('healing'); bloodCont.innerHTML = '';
                 for(let i=0; i<40; i++) {
                     let drop = document.createElement('div'); drop.className = 'blood-drop';
-                    drop.style.left = (Math.random() * 100) + 'vw';
-                    drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
-                    drop.style.animationDelay = (Math.random() * 2) + 's';
+                    drop.style.left = (Math.random() * 100) + 'vw'; drop.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's'; drop.style.animationDelay = (Math.random() * 2) + 's';
                     bloodCont.appendChild(drop);
                 }
             }
-            // 25. Vulnera Sanentur (شفاء)
             else if (spell === "vulnera sanentur") {
-                statusText.innerText = "✨ Vulnera Sanentur! (شفاء الجروح)";
-                const bloodCont = document.getElementById('blood-container');
-                if (bloodCont.children.length > 0) {
-                    bloodCont.classList.add('healing');
-                    setTimeout(() => { bloodCont.innerHTML = ''; bloodCont.classList.remove('healing'); }, 1500);
-                } else {
-                    statusText.innerText = "✨ لم أجد جروحاً لشفائها!";
-                }
+                statusText.innerText = "✨ Vulnera Sanentur! (شفاء الجروح)"; const bloodCont = document.getElementById('blood-container');
+                if (bloodCont.children.length > 0) { bloodCont.classList.add('healing'); setTimeout(() => { bloodCont.innerHTML = ''; bloodCont.classList.remove('healing'); }, 1500); } 
+                else statusText.innerText = "✨ لم أجد جروحاً لشفائها!";
             }
-            // 26. Riddikulus (المهرج)
             else if (spell === "riddikulus") {
-                statusText.innerText = "🤡 Riddikulus! (تحويل الخوف لمرح)";
-                const clown = document.getElementById('clown-container');
-                clown.classList.add('show');
-                setTimeout(() => clown.classList.remove('show'), 3500);
+                statusText.innerText = "🤡 Riddikulus! (تحويل الخوف لمرح)"; const clown = document.getElementById('clown-container');
+                clown.classList.add('show'); setTimeout(() => clown.classList.remove('show'), 3500);
             }
-            // 27. Alohomora (فتح القفل)
             else if (spell === "alohomora") {
-                statusText.innerText = "🔓 Alohomora! (فتح الأقفال)";
-                const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
+                statusText.innerText = "🔓 Alohomora! (فتح الأقفال)"; const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
                 lockCont.classList.remove('show-lock'); void lockCont.offsetWidth; 
                 lockIcon.innerText = "🔒"; lockIcon.className = ""; lockCont.classList.add('show-lock');
                 setTimeout(() => { lockIcon.className = "anim-unlock"; lockIcon.innerText = "🔓"; }, 600);
             }
-            // 28. Colloportus (إغلاق القفل)
             else if (spell === "colloportus") {
-                statusText.innerText = "🔒 Colloportus! (إغلاق الأقفال)";
-                const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
+                statusText.innerText = "🔒 Colloportus! (إغلاق الأقفال)"; const lockCont = document.getElementById('lock-container'); const lockIcon = document.getElementById('lock-icon');
                 lockCont.classList.remove('show-lock'); void lockCont.offsetWidth; 
                 lockIcon.innerText = "🔓"; lockIcon.className = ""; lockCont.classList.add('show-lock');
                 setTimeout(() => { lockIcon.className = "anim-lock"; lockIcon.innerText = "🔒"; }, 600);
             }
-
+            // 29. Slugulus Eructo (لعنة البزاق)
+            else if (spell === "slugulus eructo") {
+                statusText.innerText = "🐌 Slugulus Eructo! (لعنة البزاق)";
+                const slugCont = document.getElementById('slug-container');
+                for(let i=0; i<15; i++) {
+                    setTimeout(() => {
+                        let slug = document.createElement('div');
+                        slug.innerText = '🐌';
+                        slug.className = 'slug-particle';
+                        slug.style.left = (Math.random() * 90 + 5) + 'vw';
+                        slug.style.fontSize = (Math.random() * 3 + 2) + 'rem';
+                        slug.style.animationDuration = (Math.random() * 3 + 4) + 's'; // سقوط بطيء جداً
+                        slugCont.appendChild(slug);
+                        setTimeout(() => slug.remove(), 7000); // إزالة بعد انتهاء السقوط
+                    }, i * 300); // تأخير لظهورهم بشكل متتالي
+                }
+            }
             else if (spell === "obliviate") {
                 statusText.innerText = "🌫️ Obliviate! (مسح وإعادة ضبط)"; body.classList.add('obliviate-active');
                 setTimeout(() => {
@@ -523,9 +526,10 @@
                     stopFire(); body.className = ''; mainContent.className = 'levitate-target'; 
                     document.getElementById('glass-crack-container').style.display = 'none'; 
                     document.getElementById('snake-container').classList.remove('vipera-evanesca-anim');
-                    document.getElementById('blood-container').innerHTML = ''; // إخفاء الدم
-                    document.getElementById('clown-container').classList.remove('show'); // إخفاء المهرج
-                    document.getElementById('lock-container').classList.remove('show-lock'); // إخفاء الأقفال
+                    document.getElementById('blood-container').innerHTML = ''; 
+                    document.getElementById('slug-container').innerHTML = ''; // تنظيف البزاق
+                    document.getElementById('clown-container').classList.remove('show'); 
+                    document.getElementById('lock-container').classList.remove('show-lock'); 
                     patronusContainer.style.display = "none"; resultText.innerText = ""; 
                     statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة";
                 }, 1500); 
