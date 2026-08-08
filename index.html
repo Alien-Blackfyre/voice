@@ -219,21 +219,35 @@
         async function executeSpell(spell) {
             const body = document.body;
 
-            // 1. تعويذة الكشاف (Lumos)
+           // 1. تعويذة الكشاف (Lumos)
             if (spell.includes("lumos")) {
                 statusText.innerText = "✨ جارِ تشغيل النور...";
                 try {
+                    // طلب الكاميرا الخلفية وتفعيل الفلاش من البداية
                     const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: "environment" }
+                        video: {
+                            facingMode: "environment"
+                        }
                     });
                     cameraTrack = stream.getVideoTracks()[0];
-                    await cameraTrack.applyConstraints({ advanced: [{ torch: true }] });
-                    statusText.innerText = "✨ Lumos Maxima!";
+                    
+                    // التأكد من دعم الجهاز للفلاش
+                    const capabilities = cameraTrack.getCapabilities();
+                    if (capabilities.torch) {
+                        await cameraTrack.applyConstraints({
+                            advanced: [{ torch: true }]
+                        });
+                        statusText.innerText = "✨ Lumos Maxima! (الكشاف شغال)";
+                    } else {
+                        throw new Error("الجهاز لا يدعم الفلاش عبر المتصفح");
+                    }
                 } catch (error) {
+                    console.log(error);
+                    // لو فشل يفتح الفلاش الحقيقي هينور الشاشة
                     body.classList.add('lumos-active');
                     statusText.innerText = "✨ Lumos! (كشاف الشاشة)";
                 }
-            } 
+            }
             
             // 2. تعويذة الإطفاء (Nox)
             else if (spell.includes("nox")) {
