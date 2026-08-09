@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التعاويذ الصوتية السحرية - هافلباف</title>
+    <title>التعاويذ الصوتية السحرية - المشروع الأسطوري</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap');
 
@@ -21,7 +21,7 @@
             position: fixed; top: 20px; right: 20px; z-index: 10000;
             background: rgba(0, 0, 0, 0.7); color: #d4af37; border: 1px solid #d4af37;
             padding: 10px 20px; border-radius: 20px; cursor: pointer;
-            font-family: 'Cairo', sans-serif; font-size: 1.1em; transition: all 0.3s;
+            font-family: 'Cairo', sans-serif; font-size: 1.1em; transition: opacity 1s ease, all 0.3s;
         }
         #mode-toggle-btn:hover { background: #d4af37; color: #0d1117; box-shadow: 0 0 15px #d4af37; }
 
@@ -105,26 +105,34 @@
         .slug-particle { position: absolute; top: -10vh; font-size: 3rem; animation: fall-slug linear forwards; filter: drop-shadow(0 5px 10px rgba(100,255,100,0.6)); }
         @keyframes fall-slug { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(110vh) rotate(45deg); opacity: 0; } }
 
-        /* --- التعاويذ الـ 7 الجديدة --- */
-        
-        /* Aparecium (كشف الخبايا) */
-        #hidden-riddle { position: fixed; top: 15%; width: 100%; text-align: center; font-size: 2.5rem; font-family: 'Amiri', serif; color: transparent; text-shadow: none; z-index: 1; transition: all 2s; pointer-events: none; }
-        body.aparecium-active #hidden-riddle { color: #fff; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; }
+        /* Aparecium (كشف الخبايا والإخفاء الدرامي) */
+        #hidden-riddle {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; text-align: center; font-size: 2rem; font-family: 'Amiri', serif;
+            color: transparent; text-shadow: none; z-index: 10005; transition: all 2s;
+            pointer-events: none; line-height: 1.6;
+        }
+        /* إخفاء وتعتيم كل شيء عند تفعيل Aparecium */
+        body.aparecium-active { background-color: #000; }
+        body.aparecium-active #main-content { opacity: 0; pointer-events: none; }
+        body.aparecium-active #mode-toggle-btn { opacity: 0; pointer-events: none; }
+        /* إظهار اللغز فقط */
+        body.aparecium-active #hidden-riddle { color: #fff; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
 
-        /* Homenum Revelio (آثار الأقدام) */
+        /* Homenum Revelio */
         .footstep { position: fixed; font-size: 4rem; opacity: 0; filter: drop-shadow(0 0 10px #d4af37); animation: step-fade 3s forwards; z-index: 50; pointer-events: none; }
         @keyframes step-fade { 0% { opacity: 0; transform: scale(0.5); } 20% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; } }
 
-        /* Prior Incantato (السجل السحري) */
+        /* Prior Incantato */
         .ghost-spell { position: fixed; left: 50%; bottom: 10%; transform: translateX(-50%); font-size: 2.5rem; color: rgba(255,255,255,0.8); text-shadow: 0 0 15px rgba(255,255,255,1); font-family: 'Cairo', sans-serif; font-weight: bold; animation: float-up-ghost 4s forwards linear; z-index: 10000; pointer-events: none; text-transform: capitalize; }
         @keyframes float-up-ghost { 0% { bottom: 10%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { bottom: 90%; opacity: 0; } }
 
-        /* Morsmordre (علامة السحر الأسود) */
+        /* Morsmordre */
         body.morsmordre-active { background-color: #001100; }
         #dark-mark-container { position: fixed; top: 5vh; left: 50%; transform: translateX(-50%) scale(0); font-size: 15rem; color: #00ff00; filter: drop-shadow(0 0 30px #00ff00); z-index: 9995; pointer-events: none; transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; display: flex; flex-direction: column; align-items: center; line-height: 0.8; }
         body.morsmordre-active #dark-mark-container { transform: translateX(-50%) scale(1); opacity: 0.9; }
 
-        /* Protego (درع الحماية) */
+        /* Protego */
         #protego-shield { position: fixed; top:0; left:0; width:100%; height:100%; box-shadow: inset 0 0 0 rgba(0, 150, 255, 0); pointer-events: none; z-index: 9999; transition: all 0.5s ease; border: 0px solid rgba(0, 150, 255, 0); }
         body.protego-active #protego-shield { box-shadow: inset 0 0 150px rgba(0, 150, 255, 0.4), inset 0 0 30px rgba(0, 150, 255, 0.8); border: 5px solid rgba(0, 150, 255, 0.6); }
         .shield-ripple { background-color: rgba(0, 150, 255, 0.4) !important; }
@@ -133,7 +141,7 @@
         #main-content {
             --scale: 1; --translateY: 0; --skewX: 0deg; --rotate: 0deg;
             display: flex; flex-direction: column; align-items: center; width: 100%;
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease;
             transform: scale(var(--scale)) translateY(var(--translateY)) skewX(var(--skewX)) rotate(var(--rotate)); z-index: 20;
         }
         #main-content.text-large { --scale: 1.4; } #main-content.text-small { --scale: 0.65; }
@@ -164,7 +172,7 @@
 </head>
 <body>
 
-    <!-- موسيقى هاري بوتر (تأكد من وجود الملف بجانب هذا الكود) -->
+    <!-- موسيقى هاري بوتر -->
     <audio id="hp-music" src="hp-theme.mp3" loop></audio>
 
     <button id="mode-toggle-btn">⌨️ كتابة</button>
@@ -172,7 +180,7 @@
     <!-- درع الحماية -->
     <div id="protego-shield"></div>
 
-    <!-- رسالة أباريسيوم المخفية -->
+    <!-- رسالة أباريسيوم المخفية الجديدة -->
     <div id="hidden-riddle">"أنا فاكهة مرسومة في لوحة بالقرب من قبو هافلباف، إذا دغدغتني أضحك وأتحول إلى مقبض باب، فمن أنا؟"</div>
 
     <!-- علامة السحر الأسود -->
@@ -232,9 +240,8 @@
         
         let cameraTrack = null; let fireInterval = null; let isFireActive = false; let fireTimeout = null;
         let leviosaTimeout = null; let confundoTimeout = null; let isTextMode = false; let recognition = null;
-        let isProtegoActive = false; let spellHistory = [];
+        let isProtegoActive = false; let spellHistory = []; let apareciumTimeout = null;
 
-        // قائمة التعاويذ المتاحة (36 تعويذة)
         const validSpells = [
             "lumos", "nox", "aguamenti", "incendio", "expecto patronum", "petrificus totalus", "avada kedavra", 
             "confundo", "wingardium leviosa", "obliviate", "bombarda", "reparo", "engorgio", "reducio",
@@ -243,7 +250,6 @@
             "slugulus eructo", "aparecium", "homenum revelio", "sonorus", "quietus", "prior incantato", "morsmordre", "protego"
         ];
 
-        // قائمة التعاويذ الهجومية التي يصدها الدرع (Avada Kedavra لا تُصد!)
         const hostileSpells = [
             "incendio", "fiendfyre", "bombarda", "descendo", "diffindo", 
             "sectumsempra", "slugulus eructo", "confundo", "serpensortia", "morsmordre"
@@ -288,7 +294,7 @@
             recognition = new SpeechRecognition(); recognition.lang = 'en-US'; recognition.interimResults = false;
             micBtn.addEventListener('click', () => { patronusContainer.style.display = "none"; recognition.start(); micBtn.classList.add('listening'); statusText.innerText = "جارِ الاستماع للتعويذة..."; resultText.innerText = ""; });
             recognition.onresult = (event) => { handleSpellInput(event.results[0][0].transcript.toLowerCase()); };
-            recognition.onspeechend = () => { recognition.stop(); micBtn.classList.remove('listening'); if(statusText.innerText === "جارِ الاستماع للتعويذة...") statusText.innerText = "اضغط على الزر وانطق التعويذة"; };
+            recognition.onspeechend = () => { recognition.stop(); micBtn.classList.remove('listening'); if(statusText.innerText === "جارِ الاستماع للتعويذة...") statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة"; };
             recognition.onerror = () => { micBtn.classList.remove('listening'); statusText.innerText = "لم أتمكن من السماع، حاول مجدداً."; };
         }
 
@@ -335,18 +341,16 @@
 
         async function executeSpell(spell) {
             
-            // حفظ التعويذة في السجل السحري
             if (spell !== "prior incantato" && validSpells.includes(spell)) {
                 spellHistory.unshift(spell);
                 if (spellHistory.length > 3) spellHistory.pop();
             }
 
-            // فحص درع Protego للتعاويذ الهجومية
             if (isProtegoActive && hostileSpells.includes(spell)) {
                 statusText.innerText = `🛡️ Protego! (تم صد ${spell})`;
                 protegoShield.classList.add('shield-ripple');
                 setTimeout(() => protegoShield.classList.remove('shield-ripple'), 300);
-                return; // منع تنفيذ التعويذة
+                return; 
             }
 
             if (spell === "lumos") {
@@ -413,76 +417,50 @@
                 for(let i=0; i<15; i++) { setTimeout(() => { let slug = document.createElement('div'); slug.innerText = '🐌'; slug.className = 'slug-particle'; slug.style.left = (Math.random() * 90 + 5) + 'vw'; slug.style.fontSize = (Math.random() * 3 + 2) + 'rem'; slug.style.animationDuration = (Math.random() * 3 + 4) + 's'; slugCont.appendChild(slug); setTimeout(() => slug.remove(), 7000); }, i * 300); }
             }
             
-            // --- التعاويذ الـ 7 الجديدة --- //
+            // --- Aparecium بتعديل الإخفاء الدرامي --- //
             else if (spell === "aparecium") {
+                clearTimeout(apareciumTimeout);
                 statusText.innerText = "🔍 Aparecium! (كشف الخبايا)";
                 body.classList.add('aparecium-active');
+                
+                apareciumTimeout = setTimeout(() => {
+                    body.classList.remove('aparecium-active');
+                    if(statusText.innerText.includes("Aparecium")) {
+                        statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة";
+                    }
+                }, 15000);
             }
+
             else if (spell === "homenum revelio") {
                 statusText.innerText = "👣 Homenum Revelio! (كشف التواجد)";
-                for(let i=0; i<6; i++) {
-                    setTimeout(() => {
-                        let step = document.createElement('div');
-                        step.innerText = '👣'; step.className = 'footstep';
-                        step.style.left = (15 + i * 12) + 'vw';
-                        step.style.top = (Math.random() * 40 + 30) + 'vh';
-                        document.body.appendChild(step);
-                        setTimeout(() => step.remove(), 3000);
-                    }, i * 800);
-                }
+                for(let i=0; i<6; i++) { setTimeout(() => { let step = document.createElement('div'); step.innerText = '👣'; step.className = 'footstep'; step.style.left = (15 + i * 12) + 'vw'; step.style.top = (Math.random() * 40 + 30) + 'vh'; document.body.appendChild(step); setTimeout(() => step.remove(), 3000); }, i * 800); }
             }
-            else if (spell === "sonorus") {
-                statusText.innerText = "🔊 Sonorus! (تشغيل الموسيقى)";
-                let bgMusic = document.getElementById('hp-music');
-                bgMusic.play().catch(e => { statusText.innerText = "عذراً! الرجاء إضافة ملف hp-theme.mp3 بجانب الكود"; });
-            }
-            else if (spell === "quietus") {
-                statusText.innerText = "🔇 Quietus! (إيقاف الموسيقى)";
-                document.getElementById('hp-music').pause();
-            }
+            else if (spell === "sonorus") { statusText.innerText = "🔊 Sonorus! (تشغيل الموسيقى)"; let bgMusic = document.getElementById('hp-music'); bgMusic.play().catch(e => { statusText.innerText = "عذراً! الرجاء إضافة ملف hp-theme.mp3 بجانب الكود"; }); }
+            else if (spell === "quietus") { statusText.innerText = "🔇 Quietus! (إيقاف الموسيقى)"; document.getElementById('hp-music').pause(); }
             else if (spell === "prior incantato") {
                 statusText.innerText = "📜 Prior Incantato! (السجل السحري)";
-                if (spellHistory.length === 0) {
-                    statusText.innerText = "📜 لم يتم استخدام أي تعويذة مسبقاً!";
-                } else {
-                    spellHistory.forEach((s, i) => {
-                        setTimeout(() => {
-                            let ghost = document.createElement('div');
-                            ghost.className = 'ghost-spell';
-                            ghost.innerText = `✨ ${s}`;
-                            document.body.appendChild(ghost);
-                            setTimeout(() => ghost.remove(), 4000);
-                        }, i * 1200);
-                    });
+                if (spellHistory.length === 0) { statusText.innerText = "📜 لم يتم استخدام أي تعويذة مسبقاً!"; } else {
+                    spellHistory.forEach((s, i) => { setTimeout(() => { let ghost = document.createElement('div'); ghost.className = 'ghost-spell'; ghost.innerText = `✨ ${s}`; document.body.appendChild(ghost); setTimeout(() => ghost.remove(), 4000); }, i * 1200); });
                 }
             }
-            else if (spell === "morsmordre") {
-                statusText.innerText = "💀 Morsmordre! (علامة السحر الأسود)";
-                body.classList.add('morsmordre-active');
-            }
+            else if (spell === "morsmordre") { statusText.innerText = "💀 Morsmordre!"; body.classList.add('morsmordre-active'); }
             else if (spell === "protego") {
-                statusText.innerText = "🛡️ Protego! (درع الحماية مفعل)";
-                isProtegoActive = true;
-                body.classList.add('protego-active');
-                setTimeout(() => {
-                    isProtegoActive = false;
-                    body.classList.remove('protego-active');
-                    if(statusText.innerText.includes("Protego")) statusText.innerText = "✨ تلاشى الدرع السحري!";
-                }, 15000); // يستمر لـ 15 ثانية
+                statusText.innerText = "🛡️ Protego! (درع الحماية مفعل)"; isProtegoActive = true; body.classList.add('protego-active');
+                setTimeout(() => { isProtegoActive = false; body.classList.remove('protego-active'); if(statusText.innerText.includes("Protego")) statusText.innerText = "✨ تلاشى الدرع السحري!"; }, 15000); 
             }
 
             else if (spell === "obliviate") {
                 statusText.innerText = "🌫️ Obliviate! (مسح وإعادة ضبط)"; body.classList.add('obliviate-active');
                 setTimeout(() => {
                     if (cameraTrack) { cameraTrack.stop(); cameraTrack = null; }
-                    document.getElementById('hp-music').pause(); // إيقاف الموسيقى
+                    document.getElementById('hp-music').pause(); 
                     stopFire(); body.className = ''; mainContent.className = 'levitate-target'; 
                     document.getElementById('glass-crack-container').style.display = 'none'; 
                     document.getElementById('snake-container').classList.remove('vipera-evanesca-anim');
                     document.getElementById('blood-container').innerHTML = ''; document.getElementById('slug-container').innerHTML = ''; 
                     document.getElementById('clown-container').classList.remove('show'); document.getElementById('lock-container').classList.remove('show-lock'); 
                     patronusContainer.style.display = "none"; resultText.innerText = ""; 
-                    isProtegoActive = false; spellHistory = []; // مسح الدرع والسجل
+                    isProtegoActive = false; spellHistory = []; clearTimeout(apareciumTimeout);
                     statusText.innerText = isTextMode ? "اكتب التعويذة واضغط إلقاء" : "اضغط على الزر وانطق التعويذة";
                 }, 1500); 
                 setTimeout(() => body.classList.remove('obliviate-active'), 3000);
